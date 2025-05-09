@@ -4,37 +4,34 @@
   <meta charset="UTF-8">
   <title>Low Stock Alerts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../alerts.css">
+  <link rel="stylesheet" href="/alerts.css">
 </head>
 <body>
 
-  <div class="topbar">
+  <header class="topbar">
     <div class="logo">🛠️ Spare Parts</div>
-
     <div class="user-menu">
-        <span><strong>admin</strong></span>
-        <a href="index.html" class="logout-button">Logout</a>
-      </div>
-      
-  </div>
+      <span class="username">admin</span>
+      <a href="index.html" class="logout-button">Logout</a>
+    </div>
+  </header>
 
-  <div class="container">
-    <div class="sidebar">
+  <div class="layout">
+    <nav class="sidebar">
       <ul>
         <li><a href="home.html">📦 View Parts</a></li>
         <li><a href="manage_part.html">➕ Add / Refill</a></li>
         <li><a href="alerts.html">⚠️ Low Stock</a></li>
       </ul>
-    </div>
+    </nav>
 
-    <div class="main-content">
+    <main class="content">
       <h2>Low Stock Parts</h2>
       <div class="alert-grid">
 
-        <!-- Sample Low Stock Part -->
         <div class="alert-box">
-          <img src="../static/uploads/sample4.jpg" alt="Part Image">
-          <div class="alert-info">
+          <img src="static/uploads/sample4.jpg" alt="Part Image">
+          <div class="info">
             <p><strong>PART-009</strong></p>
             <p>Qty: 2</p>
             <p>Shelf: C1</p>
@@ -42,18 +39,18 @@
         </div>
 
         <div class="alert-box">
-          <img src="../static/uploads/sample5.jpg" alt="Part Image">
-          <div class="alert-info">
+          <img src="static/uploads/sample5.jpg" alt="Part Image">
+          <div class="info">
             <p><strong>PART-010</strong></p>
             <p>Qty: 0</p>
             <p>Shelf: B4</p>
           </div>
         </div>
 
-        <!-- More boxes as needed -->
+        <!-- Add more alert-boxes as needed -->
 
       </div>
-    </div>
+    </main>
   </div>
 
 </body>

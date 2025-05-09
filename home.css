@@ -1,133 +1,167 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.topbar {
+  background: #004466;
+  color: white;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.logo {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.search-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.search-group input,
+.search-group select,
+.search-group button {
+  padding: 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logout-button {
+  background: #ff4d4d;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 5px;
+  text-decoration: none;
+}
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.sidebar {
+  width: 200px;
+  background: #00334d;
+  color: white;
+  min-height: 100vh;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li {
+  padding: 15px 20px;
+}
+
+.sidebar li a {
+  color: white;
+  text-decoration: none;
+  display: block;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  color: #004466;
+  margin-bottom: 20px;
+}
+
+.part-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.part-box {
+  background: white;
+  width: 160px;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.2s;
+}
+
+.part-box:hover {
+  transform: scale(1.03);
+}
+
+.part-box img {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+}
+
+.info {
+  padding: 10px;
+  text-align: center;
+}
+
+.use-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  z-index: 1;
+}
+
+.use-btn:hover {
+  background: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
   }
-  
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 20px;
-    background: #004466;
-    color: white;
-  }
-  
-  .logo {
-    font-size: 20px;
-    font-weight: bold;
-  }
-  
-  .search-bar input {
-    padding: 6px;
-  }
-  
-  .search-bar button {
-    padding: 6px 10px;
-  }
-  
-  .container {
-    display: flex;
-  }
-  
+
   .sidebar {
-    width: 200px;
-    background: #00334d;
-    color: white;
-    padding-top: 20px;
-    height: 100vh;
-  }
-  
-  .sidebar ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .sidebar li {
-    padding: 10px 20px;
-  }
-  
-  .sidebar li a {
-    color: white;
-    text-decoration: none;
-  }
-  
-  .main-content {
-    flex: 1;
-    padding: 20px;
-  }
-  
-  h2 {
-    margin-bottom: 20px;
-    text-align: center;
-    color: #004466;
-  }
-  
-  .part-grid {
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    justify-content: space-around;
+  }
+
+  .search-group {
     justify-content: center;
   }
-  
-  .part-box {
-    width: 180px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 0 5px #aaa;
-    position: relative;
-    overflow: hidden;
+
+  .part-grid {
+    justify-content: center;
   }
-  
-  .part-box img {
-    width: 100%;
-    height: 120px;
-    object-fit: cover;
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
   }
-  
-  .box-info {
-    padding: 10px;
-    text-align: center;
-  }
-  
-  .use-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 5px;
-    font-size: 12px;
-    cursor: pointer;
-  }
-  
-  .use-btn:hover {
-    background: #0056b3;
-  }
-  .logout-button {
-    background: #ff4d4d;
-    color: white;
-    padding: 6px 12px;
-    text-decoration: none;
-    border-radius: 5px;
-    font-size: 14px;
-    margin-left: 10px;
-  }
-  
-  .logout-button:hover {
-    background: #cc0000;
-  }
-  .filter-bar {
-    display: flex;
-    gap: 10px;
-    margin-left: 20px;
-  }
-  
-  .filter-bar select {
-    padding: 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-  }
-  
+}

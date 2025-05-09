@@ -2,31 +2,30 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Manage Parts</title>
+  <title>Add / Refill Parts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../manage_part.css">
+  <link rel="stylesheet" href="/manage_part.css">
 </head>
 <body>
 
-  <div class="topbar">
+  <header class="topbar">
     <div class="logo">🛠️ Spare Parts</div>
     <div class="user-menu">
-        <span><strong>admin</strong></span>
-        <a href="index.html" class="logout-button">Logout</a>
-      </div>
-      
-  </div>
+      <span class="username">admin</span>
+      <a href="index.html" class="logout-button">Logout</a>
+    </div>
+  </header>
 
-  <div class="container">
-    <div class="sidebar">
+  <div class="layout">
+    <nav class="sidebar">
       <ul>
         <li><a href="home.html">📦 View Parts</a></li>
         <li><a href="manage_part.html">➕ Add / Refill</a></li>
         <li><a href="alerts.html">⚠️ Low Stock</a></li>
       </ul>
-    </div>
+    </nav>
 
-    <div class="main-content">
+    <main class="content">
       <div class="form-box">
         <h2>Add New Spare Part</h2>
         <form>
@@ -48,40 +47,38 @@
           <label for="company">Car Company:</label>
           <select id="company" name="company" required>
             <option value="">Select</option>
-            <option value="Toyota">Toyota</option>
-            <option value="Ford">Ford</option>
-            <option value="BMW">BMW</option>
-            <option value="Honda">Honda</option>
+            <option>Toyota</option>
+            <option>Ford</option>
+            <option>BMW</option>
+            <option>Honda</option>
           </select>
-          
+
           <label>Year Range:</label>
           <div class="year-range">
             <select name="year_from" required>
               <option value="">From</option>
-              <script>
-                for (let y = 1990; y <= new Date().getFullYear(); y++) {
-                  document.write(`<option value="${y}">${y}</option>`);
-                }
-              </script>
+              <!-- Example years -->
+              <option>2000</option>
+              <option>2010</option>
+              <option>2015</option>
+              <option>2020</option>
             </select>
-          
             <select name="year_to" required>
               <option value="">To</option>
-              <script>
-                for (let y = 1990; y <= new Date().getFullYear(); y++) {
-                  document.write(`<option value="${y}">${y}</option>`);
-                }
-              </script>
+              <option>2005</option>
+              <option>2015</option>
+              <option>2022</option>
+              <option>2025</option>
             </select>
           </div>
-          
+
           <label for="image">Upload Image:</label>
           <input type="file" id="image" name="image">
 
-          <button type="submit">Add Part</button>
+          <button type="submit">Save Part</button>
         </form>
       </div>
-    </div>
+    </main>
   </div>
 
 </body>

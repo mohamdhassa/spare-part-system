@@ -4,55 +4,55 @@
   <meta charset="UTF-8">
   <title>Part Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="../static/css/part_detail.css">
+  <link rel="stylesheet" href="static/css/part_detail.css">
 </head>
 <body>
 
-  <div class="topbar">
+  <header class="topbar">
     <div class="logo">🛠️ Spare Parts</div>
     <div class="user-menu">
-        <span><strong>admin</strong></span>
-        <a href="index.html" class="logout-button">Logout</a>
-      </div>
-      
-  </div>
+      <span class="username">admin</span>
+      <a href="index.html" class="logout-button">Logout</a>
+    </div>
+  </header>
 
-  <div class="container">
-    <div class="sidebar">
+  <div class="layout">
+    <nav class="sidebar">
       <ul>
         <li><a href="home.html">📦 View Parts</a></li>
         <li><a href="manage_part.html">➕ Add / Refill</a></li>
         <li><a href="alerts.html">⚠️ Low Stock</a></li>
       </ul>
-    </div>
+    </nav>
 
-    <div class="main-content">
-      <div class="part-details">
+    <main class="content">
+      <div class="part-detail-box">
         <h2>Brake Disc (PART-003)</h2>
-        <img src="../static/uploads/sample3.jpg" alt="Part Image">
+        <img src="static/uploads/sample3.jpg" alt="Part Image">
 
-        <p><strong>name:</strong> oil</p>
-        <p><strong>Description:</strong> Rear brake disc for model X</p>
-        <p><strong>Amount:</strong> 6</p>
-        <p><strong>Shelf:</strong> B5</p>
-        <p><strong>molde:</strong> 2007</p>
-        <p><strong>car type:</strong> nassin</p>
-        <p><strong>Added:</strong> 2025-05-08</p>
-
+        <div class="details">
+          <p><strong>Description:</strong> Rear brake disc for Model X</p>
+          <p><strong>Car Company:</strong> Toyota</p>
+          <p><strong>Year From:</strong> 2015</p>
+          <p><strong>Year To:</strong> 2022</p>
+          <p><strong>Amount:</strong> 6</p>
+          <p><strong>Shelf:</strong> B5</p>
+          <p><strong>Date Added:</strong> 2025-05-08</p>
+        </div>
 
         <form>
-          <label for="refill_amount">Add Quantity:</label>
-          <input type="number" id="refill_amount" name="refill_amount" min="1">
+          <label for="refill">Add Quantity:</label>
+          <input type="number" id="refill" placeholder="Enter quantity">
           <button type="submit">Refill</button>
         </form>
 
         <form>
-          <label for="new_shelf">Change Shelf:</label>
-          <input type="text" id="new_shelf" name="new_shelf">
+          <label for="shelf">Change Shelf:</label>
+          <input type="text" id="shelf" placeholder="New shelf name">
           <button type="submit">Update Shelf</button>
         </form>
       </div>
-    </div>
+    </main>
   </div>
 
 </body>
