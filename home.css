@@ -5,17 +5,20 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background-color: #f9f9f9;
+  background-color: #f0f0f0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .topbar {
   background: #004466;
   color: white;
-  padding: 10px;
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
   gap: 10px;
 }
 
@@ -26,8 +29,8 @@ body {
 
 .search-group {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 8px;
 }
 
 .search-group input,
@@ -53,15 +56,19 @@ body {
 }
 
 .layout {
-  display: flex;
-  flex-wrap: wrap;
+  flex: 1;
+  display: grid;
+  grid-template-columns: 25% 75%;
+  height: calc(100vh - 60px);
+  overflow: hidden;
 }
 
 .sidebar {
-  width: 200px;
   background: #00334d;
   color: white;
-  min-height: 100vh;
+  height: 100%;
+  padding-top: 20px;
+  overflow-y: auto;
 }
 
 .sidebar ul {
@@ -81,8 +88,9 @@ body {
 }
 
 .content {
-  flex: 1;
-  padding: 20px;
+  padding: 15px;
+  height: 100%;
+  overflow-y: auto;
 }
 
 h2 {
@@ -94,22 +102,22 @@ h2 {
 .part-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 15px;
   justify-content: center;
 }
 
 .part-box {
-  background: white;
   width: 160px;
+  background: white;
   border-radius: 8px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
-  overflow: hidden;
+  box-shadow: 0 0 5px #ccc;
   position: relative;
+  overflow: hidden;
   transition: transform 0.2s;
 }
 
 .part-box:hover {
-  transform: scale(1.03);
+  transform: scale(1.02);
 }
 
 .part-box img {
@@ -125,43 +133,25 @@ h2 {
 
 .use-btn {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 10px;
+  right: 10px;
   background: #007bff;
   color: white;
   border: none;
-  padding: 4px 8px;
-  border-radius: 5px;
-  cursor: pointer;
+  padding: 5px 8px;
   font-size: 12px;
-  z-index: 1;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.use-btn:hover {
-  background: #0056b3;
-}
-
+/* No stacking or sidebar collapsing even on mobile */
 @media (max-width: 768px) {
   .layout {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
+    grid-template-columns: 25% 75%;
   }
 
   .search-group {
+    flex-wrap: wrap;
     justify-content: center;
-  }
-
-  .part-grid {
-    justify-content: center;
-  }
-
-  .topbar {
-    flex-direction: column;
-    align-items: flex-start;
   }
 }

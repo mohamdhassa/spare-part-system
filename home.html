@@ -2,12 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Spare Parts - Dashboard</title>
+  <title>Spare Parts - Home</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/home.css">
 </head>
 <body>
 
+  <!-- Topbar -->
   <header class="topbar">
     <div class="logo">🛠️ Spare Parts</div>
     <div class="search-group">
@@ -16,16 +17,20 @@
       <select>
         <option value="">Company</option>
         <option>Toyota</option>
-        <option>BMW</option>
         <option>Ford</option>
+        <option>BMW</option>
       </select>
       <select>
-        <option value="">Year From</option>
-        <!-- Add more years here -->
+        <option value="">From</option>
+        <option>2000</option>
+        <option>2010</option>
+        <option>2020</option>
       </select>
       <select>
-        <option value="">Year To</option>
-        <!-- Add more years here -->
+        <option value="">To</option>
+        <option>2005</option>
+        <option>2015</option>
+        <option>2025</option>
       </select>
     </div>
     <div class="user-menu">
@@ -34,7 +39,9 @@
     </div>
   </header>
 
+  <!-- Page Layout -->
   <div class="layout">
+    <!-- Sidebar -->
     <nav class="sidebar">
       <ul>
         <li><a href="home.html">📦 View Parts</a></li>
@@ -43,15 +50,16 @@
       </ul>
     </nav>
 
+    <!-- Main Content -->
     <main class="content">
       <h2>Available Spare Parts</h2>
       <div class="part-grid">
 
-        <!-- Example Box -->
+        <!-- Sample part box -->
         <div class="part-box">
           <button class="use-btn" onclick="usePart(this)">Use -1</button>
           <a href="part_detail.html">
-            <img src="static/uploads/sample1.jpg" alt="Part Image">
+            <img src="static/uploads/sample1.jpg" alt="Part">
             <div class="info">
               <p><strong>PART-001</strong></p>
               <p>Shelf: A1</p>
@@ -60,7 +68,7 @@
           </a>
         </div>
 
-        <!-- More boxes as needed -->
+        <!-- Add more boxes here -->
 
       </div>
     </main>
@@ -68,8 +76,8 @@
 
   <script>
     function usePart(btn) {
-      const qty = btn.closest(".part-box").querySelector(".qty");
-      const current = parseInt(qty.innerText);
+      const qty = btn.closest('.part-box').querySelector('.qty');
+      let current = parseInt(qty.innerText);
       if (current > 0) qty.innerText = current - 1;
       else alert("Out of stock.");
     }
