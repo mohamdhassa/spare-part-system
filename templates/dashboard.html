@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Spare Parts{% endblock %}
+{% block head_style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% endblock %}
+
+{% block content %}
+<h2>Your Spare Parts</h2>
+<div class="part-list">
+  {% for part in parts %}
+  <div class="part-card">
+    <a href="/part/{{ part.id }}">
+      <img src="/{{ part.image_path }}" alt="Part Image">
+      <p><strong>{{ part.part_number }}</strong></p>
+      <p>Shelf: {{ part.shelf }}</p>
+    </a>
+    <form method="post" action="/use/{{ part.id }}">
+      <button type="submit">Use (−1)</button>
+    </form>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

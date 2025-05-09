@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Part Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/part_detail.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">🛠️ Spare Parts</div>
+    <div class="user-menu">
+        <span><strong>admin</strong></span>
+        <a href="index.html" class="logout-button">Logout</a>
+      </div>
+      
+  </div>
+
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="home.html">📦 View Parts</a></li>
+        <li><a href="manage_part.html">➕ Add / Refill</a></li>
+        <li><a href="alerts.html">⚠️ Low Stock</a></li>
+      </ul>
+    </div>
+
+    <div class="main-content">
+      <div class="part-details">
+        <h2>Brake Disc (PART-003)</h2>
+        <img src="../static/uploads/sample3.jpg" alt="Part Image">
+
+        <p><strong>name:</strong> oil</p>
+        <p><strong>Description:</strong> Rear brake disc for model X</p>
+        <p><strong>Amount:</strong> 6</p>
+        <p><strong>Shelf:</strong> B5</p>
+        <p><strong>molde:</strong> 2007</p>
+        <p><strong>car type:</strong> nassin</p>
+        <p><strong>Added:</strong> 2025-05-08</p>
+
+
+        <form>
+          <label for="refill_amount">Add Quantity:</label>
+          <input type="number" id="refill_amount" name="refill_amount" min="1">
+          <button type="submit">Refill</button>
+        </form>
+
+        <form>
+          <label for="new_shelf">Change Shelf:</label>
+          <input type="text" id="new_shelf" name="new_shelf">
+          <button type="submit">Update Shelf</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

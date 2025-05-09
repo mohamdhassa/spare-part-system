@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}Spare Parts System{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% block head_style %}{% endblock %}
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">🛠️ Spare Parts</div>
+    <div class="search-bar">
+      <form method="get" action="/search">
+        <input type="text" name="q" placeholder="Search part...">
+        <button type="submit">🔍</button>
+      </form>
+    </div>
+    <div class="user-menu">
+        <span><strong>admin</strong></span>
+        <a href="index.html" class="logout-button">Logout</a>
+      </div>
+      
+  </div>
+
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="/home">📦 View Parts</a></li>
+        <li><a href="/manage-part">➕ Add / Refill</a></li>
+        <li><a href="/alerts">⚠️ Low Stock</a></li>
+      </ul>
+    </div>
+    <div class="main-content">
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+</body>
+</html>
+<!-- Compare this snippet from templates/manage_part.html: -->

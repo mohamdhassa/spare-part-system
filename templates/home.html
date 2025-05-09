@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spare Parts Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../static/css/home.css">
+</head>
+<body>
+
+  <div class="topbar">
+    <div class="logo">🛠️ Spare Parts</div>
+    <div class="search-bar">
+      <input type="text" placeholder="Search part...">
+      <button>🔍</button>
+      
+    </div>
+    <form class="filter-bar">
+      <select name="company">
+        <option value="">Company</option>
+        <option value="Toyota">Toyota</option>
+        <option value="Ford">Ford</option>
+        <option value="BMW">BMW</option>
+        <option value="Honda">Honda</option>
+      </select>
+    
+      <select name="year_from">
+        <option value="">From</option>
+        <!-- Generate years dynamically or manually -->
+        <script>
+          for (let y = 1990; y <= new Date().getFullYear(); y++) {
+            document.write(`<option value="${y}">${y}</option>`);
+          }
+        </script>
+      </select>
+    
+      <select name="year_to">
+        <option value="">To</option>
+        <script>
+          for (let y = 1990; y <= new Date().getFullYear(); y++) {
+            document.write(`<option value="${y}">${y}</option>`);
+          }
+        </script>
+      </select>
+    </form>
+    
+    <div class="user-menu">
+        <span><strong>admin</strong></span>
+        <a href="index.html" class="logout-button">Logout</a>
+      </div>
+  </div>
+
+  <div class="container">
+    <div class="sidebar">
+      <ul>
+        <li><a href="home.html">📦 View Parts</a></li>
+        <li><a href="manage_part.html">➕ Add / Refill</a></li>
+        <li><a href="alerts.html">⚠️ Low Stock</a></li>
+      </ul>
+    </div>
+
+    <div class="main-content">
+      <h2>Available Spare Parts</h2>
+      <div class="part-grid">
+
+        <!-- Sample Part Box -->
+        <div class="part-box">
+          <a href="part_detail.html">
+            <img src="../static/uploads/sample1.jpg" alt="Part Image">
+            <div class="box-info">
+              <p><strong>PART-001</strong></p>
+              <p>Shelf: A1</p>
+              <p>Qty: <span class="qty">5</span></p>
+            </div>
+          </a>
+          <button class="use-btn" onclick="usePart(this)">Use -1</button>
+        </div>
+
+        <div class="part-box">
+          <a href="part_detail.html">
+            <img src="../static/uploads/sample2.jpg" alt="Part Image">
+            <div class="box-info">
+              <p><strong>PART-002</strong></p>
+              <p>Shelf: B2</p>
+              <p>Qty: <span class="qty">3</span></p>
+            </div>
+          </a>
+          <button class="use-btn" onclick="usePart(this)">Use -1</button>
+        </div>
+
+        <!-- More boxes as needed -->
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function usePart(button) {
+      const qtySpan = button.parentElement.querySelector('.qty');
+      let current = parseInt(qtySpan.innerText);
+      if (current > 0) {
+        qtySpan.innerText = current - 1;
+      } else {
+        alert("This part is already at 0.");
+      }
+    }
+  </script>
+
+</body>
+</html>
