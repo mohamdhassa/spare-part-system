@@ -28,58 +28,59 @@
     <main class="content">
       <div class="form-box">
         <h2>Add New Spare Part</h2>
-        <form>
+        <form action="/add_part" method="POST" enctype="multipart/form-data">
           <label for="name">Part Name:</label>
-          <input type="text" id="name" required>
-
+          <input type="text" id="name" name="name" required>
+        
           <label for="part_number">Part Number:</label>
-          <input type="text" id="part_number" required>
-
+          <input type="text" id="part_number" name="part_number" required>
+        
           <label for="description">Description:</label>
-          <input type="text" id="description">
-
+          <input type="text" id="description" name="description">
+        
           <label for="amount">Amount:</label>
-          <input type="number" id="amount" required>
-
+          <input type="number" id="amount" name="amount" required>
+        
           <label for="shelf">Shelf:</label>
-          <input type="text" id="shelf">
-
-          <label for="pay price">pay price ber pice :</label>
-          <input type="text" id="pay price">
-
-          <label for="sale price">sale price ber pice :</label>
-          <input type="text" id="sale price">
-
+          <input type="text" id="shelf" name="shelf">
+        
+          <label for="pay_price">Pay price per piece:</label>
+          <input type="text" id="pay_price" name="pay_price">
+        
+          <label for="sale_price">Sale price per piece:</label>
+          <input type="text" id="sale_price" name="sale_price">
+        
           <label for="company">Car Company:</label>
-          <select id="company" required>
+          <select id="company" name="company" required>
             <option value="">Select</option>
             <option>Toyota</option>
             <option>Ford</option>
             <option>BMW</option>
             <option>Honda</option>
           </select>
-
+        
           <label>Year Range:</label>
           <div class="year-range">
-            <select required>
+            <select name="year_from" required>
               <option value="">From</option>
               <option>2000</option>
               <option>2010</option>
               <option>2020</option>
             </select>
-            <select required>
+            <select name="year_to" required>
               <option value="">To</option>
               <option>2005</option>
               <option>2015</option>
               <option>2025</option>
             </select>
           </div>
-
-          <label for="image">Upload Image:</label>
-          <input type="file" id="image">
-
+        
+          <label for="image_url">Image URL:</label>
+          <input type="text" id="image_url" name="image_url">
+          
           <button type="submit">Save Part</button>
         </form>
+        
       </div>
     </main>
   </div>
