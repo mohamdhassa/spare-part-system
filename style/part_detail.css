@@ -141,3 +141,36 @@ form button:hover {
     grid-template-columns: 25% 75%;
   }
 }
+
+.quantity-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.quantity-actions form {
+  flex: 1;
+}
+
+.quantity-actions input {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 5px;
+}
+
+.quantity-actions button {
+  width: 100%;
+  padding: 6px;
+}
+
+
+.qty-actions {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.qty-actions .action {
+  flex: 1;
+}

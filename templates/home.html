@@ -60,7 +60,7 @@
               <input type="hidden" name="part_id" value="{{ part[0] }}">
               <button class="use-btn" type="submit">Use -1</button>
             </form>
-            <a href="/part_detail?id={{ part[0] }}">
+            <a href="/part_detail/{{ part[0] }}">
               <img src="{{ part[5] or '/static/uploads/sample1.jpg' }}" alt="Part Image">
               <div class="info">
                 <p><strong>{{ part[2] }}</strong></p> <!-- part_number -->

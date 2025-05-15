@@ -186,11 +186,60 @@ def alerts():
         return redirect('/')
     return render_template('alerts.html')
 
+# ✅ FIXED: Renamed this function to avoid route conflict
 @app.route('/part_detail')
-def part_detail():
+def part_detail_page():
     if 'username' not in session:
         return redirect('/')
     return render_template('part_detail.html')
+
+@app.route('/part_detail/<int:part_id>')
+def part_detail(part_id):
+    if 'username' not in session:
+        return redirect('/')
+
+    username = session['username']
+    table_name = f"parts_{username}"
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute(f"""
+            SELECT name, part_number, description, amount, shelf, company, 
+                   year_from, year_to, pay_price, sale_price, image
+            FROM {table_name}
+            WHERE id = %s
+        """, (part_id,))
+        part = cur.fetchone()
+
+        if not part:
+            flash("Part not found")
+            return redirect('/home')
+
+        part_data = {
+            'id': part_id,
+            'name': part[0],
+            'part_number': part[1],
+            'description': part[2],
+            'amount': part[3],
+            'shelf': part[4],
+            'company': part[5],
+            'year_from': part[6],
+            'year_to': part[7],
+            'pay_price': part[8],
+            'sale_price': part[9],
+            'image': part[10]
+        }
+
+    except Exception as e:
+        flash(f"Error loading part: {e}")
+        return redirect('/home')
+    finally:
+        cur.close()
+        conn.close()
+
+    return render_template('part_detail.html', part=part_data)
 
 @app.route('/logout')
 def logout():
@@ -200,6 +249,79 @@ def logout():
 @app.route('/style/<path:filename>')
 def serve_style(filename):
     return send_from_directory('style', filename)
+
+
+@app.route('/add_quantity/<int:part_id>', methods=['POST'])
+def add_quantity(part_id):
+    if 'username' not in session:
+        return redirect('/')
+
+    qty = int(request.form.get('add_qty', 0))
+    username = session['username']
+    table_name = f"parts_{username}"
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(f"""
+        UPDATE {table_name}
+        SET amount = amount + %s
+        WHERE id = %s
+    """, (qty, part_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect(f'/part_detail/{part_id}')
+
+
+@app.route('/remove_quantity/<int:part_id>', methods=['POST'])
+def remove_quantity(part_id):
+    if 'username' not in session:
+        return redirect('/')
+
+    qty = int(request.form.get('remove_qty', 0))
+    username = session['username']
+    table_name = f"parts_{username}"
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(f"""
+        UPDATE {table_name}
+        SET amount = GREATEST(amount - %s, 0)
+        WHERE id = %s
+    """, (qty, part_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect(f'/part_detail/{part_id}')
+@app.route('/update_shelf/<int:part_id>', methods=['POST'])
+def update_shelf(part_id):
+    if 'username' not in session:
+        return redirect('/')
+
+    new_shelf = request.form.get('shelf', '').strip()
+    if not new_shelf:
+        flash("Shelf name cannot be empty")
+        return redirect(f'/part_detail/{part_id}')
+
+    username = session['username']
+    table_name = f"parts_{username}"
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(f"""
+        UPDATE {table_name}
+        SET shelf = %s
+        WHERE id = %s
+    """, (new_shelf, part_id))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect(f'/part_detail/{part_id}')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

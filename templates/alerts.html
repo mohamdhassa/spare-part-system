@@ -4,14 +4,14 @@
   <meta charset="UTF-8">
   <title>Low Stock Alerts</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="/style/alerts.css">
+  <link rel="stylesheet" href="/style/home.css">
 </head>
 <body>
 
   <header class="topbar">
     <div class="logo">🛠️ Spare Parts</div>
     <div class="user-menu">
-      <span class="username">admin</span>
+      <span class="username">{{ session['username'] }}</span>
       <a href="/logout" class="logout-button">Logout</a>
     </div>
   </header>
@@ -21,32 +21,32 @@
       <ul>
         <li><a href="/home">📦 View Parts</a></li>
         <li><a href="/manage">➕ Add / Refill</a></li>
-        <li><a href="/alerts">⚠️ Low Stock</a></li>        
+        <li><a href="/alerts">⚠️ Low Stock</a></li>
       </ul>
     </nav>
 
     <main class="content">
-      <h2>Low Stock Parts</h2>
-      <div class="alert-grid">
-        <div class="alert-box">
-          <img src="static/uploads/sample4.jpg" alt="Part Image">
-          <div class="info">
-            <p><strong>PART-009</strong></p>
-            <p>Qty: 2</p>
-            <p>Shelf: C1</p>
-          </div>
-        </div>
+      <h2>⚠️ Low Stock Parts (2 or less)</h2>
 
-        <div class="alert-box">
-          <img src="static/uploads/sample5.jpg" alt="Part Image">
-          <div class="info">
-            <p><strong>PART-010</strong></p>
-            <p>Qty: 0</p>
-            <p>Shelf: B4</p>
-          </div>
+      <div class="part-grid">
+        {% for part in parts %}
+        <div class="part-box">
+          <form method="POST" action="/use_part">
+            <input type="hidden" name="part_id" value="{{ part[0] }}">
+            <button class="use-btn" type="submit">Use -1</button>
+          </form>
+          <a href="/part_detail/{{ part[0] }}">
+            <img src="{{ part[5] }}" alt="Part Image">
+            <div class="info">
+              <p><strong>{{ part[2] }}</strong></p>
+              <p>Shelf: {{ part[4] }}</p>
+              <p>Qty: <span class="qty">{{ part[3] }}</span></p>
+            </div>
+          </a>
         </div>
-
-        <!-- More alert-boxes as needed -->
+        {% else %}
+        <p>No low stock parts found.</p>
+        {% endfor %}
       </div>
     </main>
   </div>

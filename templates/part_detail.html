@@ -27,31 +27,45 @@
 
     <main class="content">
       <div class="part-detail-box">
-        <h2>Brake Disc (PART-003)</h2>
-        <img src="static/uploads/sample3.jpg" alt="Part Image">
-
+        <h2>{{ part.name }} ({{ part.part_number }})</h2>
+        <img src="{{ part.image }}" alt="Part Image">
+        
         <div class="details">
-          <p><strong>Description:</strong> Rear brake disc for Model X</p>
-          <p><strong>Car Company:</strong> Toyota</p>
-          <p><strong>Year From:</strong> 2015</p>
-          <p><strong>Year To:</strong> 2022</p>
-          <p><strong>Amount:</strong> 6</p>
-          <p><strong>Shelf:</strong> B5</p>
-          <p><strong>price:</strong> 25</p>
-          <p><strong>Date Added:</strong> 2025-05-08</p>
+          <p><strong>Description:</strong> {{ part.description }}</p>
+          <p><strong>Car Company:</strong> {{ part.company }}</p>
+          <p><strong>Year From:</strong> {{ part.year_from }}</p>
+          <p><strong>Year To:</strong> {{ part.year_to }}</p>
+          <p><strong>Amount:</strong> {{ part.amount }}</p>
+          <p><strong>Shelf:</strong> {{ part.shelf }}</p>
+          <p><strong>Price:</strong> {{ part.sale_price }}</p>
         </div>
+        
+        <div class="quantity-actions">
+          <!-- Remove Quantity -->
+          <form method="post" action="/remove_quantity/{{ part.id }}">
+            <label for="remove_qty">Remove</label>
+            <input type="number" id="remove_qty" name="remove_qty" min="1" required>
+            <button type="submit">–</button>
+          </form>
+        
+          <!-- Add Quantity -->
+          <form method="post" action="/add_quantity/{{ part.id }}">
+            <label for="add_qty">Add</label>
+            <input type="number" id="add_qty" name="add_qty" min="1" required>
+            <button type="submit">+</button>
+          </form>
+        </div>
+        
 
-        <form>
-          <label for="refill">Add Quantity:</label>
-          <input type="number" id="refill" placeholder="Enter quantity">
-          <button type="submit">Refill</button>
-        </form>
 
-        <form>
+        <!-- Change Shelf -->
+        <form method="post" action="/update_shelf/{{ part.id }}">
           <label for="shelf">Change Shelf:</label>
-          <input type="text" id="shelf" placeholder="New shelf name">
+          <input type="text" id="shelf" name="shelf" placeholder="New shelf name" required>
           <button type="submit">Update Shelf</button>
         </form>
+        
+        
       </div>
     </main>
   </div>
