@@ -60,3 +60,10 @@ button {
 button:hover {
   background: #0056b3;
 }
+
+.flash-messages {
+  margin-bottom: 1em;
+  color: red;
+  font-weight: bold;
+  text-align: center;
+}
