@@ -74,10 +74,28 @@ def home():
         return redirect('/')
     return render_template('home.html')
 
+@app.route('/manage')
+def manage():
+    if 'username' not in session:
+        return redirect('/')
+    return render_template('manage_part.html')
+
+@app.route('/alerts')
+def alerts():
+    if 'username' not in session:
+        return redirect('/')
+    return render_template('alerts.html')
+
 @app.route('/logout')
 def logout():
     session.clear()
     return redirect('/')
+
+@app.route('/part_detail')
+def part_detail():
+    if 'username' not in session:
+        return redirect('/')
+    return render_template('part_detail.html')
 
 @app.route('/style/<path:filename>')
 def serve_style(filename):
