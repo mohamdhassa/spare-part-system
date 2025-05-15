@@ -54,23 +54,26 @@
     <main class="content">
       <h2>Available Spare Parts</h2>
       <div class="part-grid">
-
-        <!-- Sample part box -->
-        <div class="part-box">
-          <button class="use-btn" onclick="usePart(this)">Use -1</button>
-          <a href="/part_detail">
-            <img src="static/uploads/sample1.jpg" alt="Part">
-            <div class="info">
-              <p><strong>PART-001</strong></p>
-              <p>Shelf: A1</p>
-              <p>Qty: <span class="qty">5</span></p>
-            </div>
-          </a>
-        </div>
-
-        <!-- Add more boxes here -->
-
+        {% for part in parts %}
+          <div class="part-box">
+            <form action="/use_part" method="POST">
+              <input type="hidden" name="part_id" value="{{ part[0] }}">
+              <button class="use-btn" type="submit">Use -1</button>
+            </form>
+            <a href="/part_detail?id={{ part[0] }}">
+              <img src="{{ part[5] or '/static/uploads/sample1.jpg' }}" alt="Part Image">
+              <div class="info">
+                <p><strong>{{ part[2] }}</strong></p> <!-- part_number -->
+                <p>Shelf: {{ part[3] }}</p>           <!-- shelf -->
+                <p>Qty: <span class="qty">{{ part[4] }}</span></p> <!-- amount -->
+              </div>
+            </a>
+          </div>
+        {% else %}
+          <p>No parts found. Add some from the Manage page.</p>
+        {% endfor %}
       </div>
+      
     </main>
   </div>
 

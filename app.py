@@ -4,8 +4,8 @@ import bcrypt
 import os
 from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
+from datetime import datetime
 import uuid
-from datetime import datetime  # ✅ Added missing import
 
 load_dotenv()
 
@@ -76,34 +76,56 @@ def login():
 def home():
     if 'username' not in session:
         return redirect('/')
-    return render_template('home.html')
+
+    username = session['username']
+    table_name = f"parts_{username}"
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute(f"""
+            SELECT id, name, part_number, shelf, amount, image
+            FROM {table_name}
+            ORDER BY created_at DESC
+        """)
+        parts = cur.fetchall()
+    except Exception as e:
+        flash(f"Failed to load parts: {e}")
+        parts = []
+
+    cur.close()
+    conn.close()
+
+    return render_template('home.html', username=username, parts=parts)
+
+@app.route('/use_part', methods=['POST'])
+def use_part():
+    if 'username' not in session:
+        return redirect('/')
+
+    part_id = request.form.get('part_id')
+    username = session['username']
+    table_name = f"parts_{username}"
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(f"""
+        UPDATE {table_name}
+        SET amount = GREATEST(amount - 1, 0)
+        WHERE id = %s
+    """, (part_id,))
+    conn.commit()
+    cur.close()
+    conn.close()
+
+    return redirect('/home')
 
 @app.route('/manage')
 def manage():
     if 'username' not in session:
         return redirect('/')
     return render_template('manage_part.html')
-
-@app.route('/alerts')
-def alerts():
-    if 'username' not in session:
-        return redirect('/')
-    return render_template('alerts.html')
-
-@app.route('/part_detail')
-def part_detail():
-    if 'username' not in session:
-        return redirect('/')
-    return render_template('part_detail.html')
-
-@app.route('/logout')
-def logout():
-    session.clear()
-    return redirect('/')
-
-@app.route('/style/<path:filename>')
-def serve_style(filename):
-    return send_from_directory('style', filename)
 
 @app.route('/add_part', methods=['POST'])
 def add_part():
@@ -129,7 +151,6 @@ def add_part():
 
     filename = image_url.strip()
 
-    # Save to DB
     conn = get_connection()
     cur = conn.cursor()
 
@@ -159,6 +180,26 @@ def add_part():
 
     return redirect('/manage')
 
+@app.route('/alerts')
+def alerts():
+    if 'username' not in session:
+        return redirect('/')
+    return render_template('alerts.html')
+
+@app.route('/part_detail')
+def part_detail():
+    if 'username' not in session:
+        return redirect('/')
+    return render_template('part_detail.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
+
+@app.route('/style/<path:filename>')
+def serve_style(filename):
+    return send_from_directory('style', filename)
 
 if __name__ == '__main__':
     app.run(debug=True)
