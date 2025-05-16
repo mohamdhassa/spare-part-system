@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: spare-parts-app
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
