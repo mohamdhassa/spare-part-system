@@ -125,7 +125,8 @@ def use_part():
 def manage():
     if 'username' not in session:
         return redirect('/')
-    return render_template('manage_part.html')
+    return render_template('manage_part.html', username=session['username'])
+
 
 @app.route('/add_part', methods=['POST'])
 def add_part():
@@ -184,7 +185,30 @@ def add_part():
 def alerts():
     if 'username' not in session:
         return redirect('/')
-    return render_template('alerts.html')
+
+    username = session['username']
+    table_name = f"parts_{username}"
+
+    conn = get_connection()
+    cur = conn.cursor()
+
+    try:
+        cur.execute(f"""
+            SELECT id, name, part_number, shelf, amount, image
+            FROM {table_name}
+            WHERE amount <= 2
+            ORDER BY amount ASC
+        """)
+        low_stock_parts = cur.fetchall()
+    except Exception as e:
+        flash(f"Error loading low stock parts: {e}")
+        low_stock_parts = []
+
+    cur.close()
+    conn.close()
+
+    return render_template('alerts.html', parts=low_stock_parts)
+
 
 # ✅ FIXED: Renamed this function to avoid route conflict
 @app.route('/part_detail')
