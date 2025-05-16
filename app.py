@@ -72,8 +72,54 @@ def login():
         flash(f"Internal error: {e}")
         return redirect('/')
 
-@app.route('/home')
+@app.route('/home', methods=['GET', 'POST'])
 def home():
+    if 'username' not in session:
+        return redirect('/')
+
+    username = session['username']
+    table_name = f"parts_{username}"
+    keyword = request.form.get('keyword', '').strip()
+    company = request.form.get('company', '').strip()
+    year_from = request.form.get('year_from', '').strip()
+    year_to = request.form.get('year_to', '').strip()
+
+    query = f"SELECT id, name, part_number, shelf, amount, image FROM {table_name} WHERE 1=1"
+    values = []
+
+    if keyword:
+        keyword_like = f"%{keyword}%"
+        query += " AND (name ILIKE %s OR part_number ILIKE %s OR description ILIKE %s OR shelf ILIKE %s OR company ILIKE %s)"
+        values += [keyword_like] * 5
+
+    if company:
+        query += " AND company = %s"
+        values.append(company)
+
+    if year_from:
+        query += " AND year_from >= %s"
+        values.append(int(year_from))
+
+    if year_to:
+        query += " AND year_to <= %s"
+        values.append(int(year_to))
+
+    query += " ORDER BY created_at DESC"
+
+    conn = get_connection()
+    cur = conn.cursor()
+    try:
+        cur.execute(query, values)
+        parts = cur.fetchall()
+    except Exception as e:
+        flash(f"Failed to search parts: {e}")
+        parts = []
+
+    cur.close()
+    conn.close()
+
+    return render_template('home.html', username=username, parts=parts)
+
     if 'username' not in session:
         return redirect('/')
 

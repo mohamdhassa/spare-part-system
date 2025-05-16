@@ -11,28 +11,29 @@
   <!-- Topbar -->
   <header class="topbar">
     <div class="logo">🛠️ Spare Parts</div>
-    <div class="search-group">
-      <input type="text" placeholder="Search part...">
-      <button>🔍</button>
-      <select>
+    <form class="search-group" method="POST" action="/home">
+      <input type="text" name="keyword" placeholder="Search part...">
+      <select name="company">
         <option value="">Company</option>
         <option>Toyota</option>
         <option>Ford</option>
         <option>BMW</option>
       </select>
-      <select>
+      <select name="year_from">
         <option value="">From</option>
         <option>2000</option>
         <option>2010</option>
         <option>2020</option>
       </select>
-      <select>
+      <select name="year_to">
         <option value="">To</option>
         <option>2005</option>
         <option>2015</option>
         <option>2025</option>
       </select>
-    </div>
+      <button type="submit">🔍</button>
+    </form>
+    
     <div class="user-menu">
       <span class="username">{{ username }}</span>
       <a href="/logout" class="logout-button">Logout</a>
