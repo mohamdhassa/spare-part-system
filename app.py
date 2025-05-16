@@ -268,7 +268,7 @@ def part_detail(part_id):
     if 'username' not in session:
         return redirect('/')
 
-    username = session['username']
+    username = session['username']  # ✅ Get username
     table_name = f"parts_{username}"
 
     conn = get_connection()
@@ -309,7 +309,9 @@ def part_detail(part_id):
         cur.close()
         conn.close()
 
-    return render_template('part_detail.html', part=part_data)
+    # ✅ Pass username to the template
+    return render_template('part_detail.html', part=part_data, username=username)
+
 
 @app.route('/logout')
 def logout():
