@@ -84,6 +84,7 @@ def home():
     company = request.form.get('company', '').strip()
     year_from = request.form.get('year_from', '').strip()
     year_to = request.form.get('year_to', '').strip()
+    model = request.form.get('model', '').strip()
 
     query = f"SELECT id, name, part_number, shelf, amount, image FROM {table_name} WHERE 1=1"
     values = []
@@ -96,6 +97,10 @@ def home():
     if company:
         query += " AND company = %s"
         values.append(company)
+
+    if model:
+      query += " AND model = %s"
+      values.append(model)
 
     if year_from:
         query += " AND year_from >= %s"

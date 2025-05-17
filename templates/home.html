@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <title>Spare Parts - Home</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/style/home.css">
 </head>
@@ -13,12 +15,24 @@
     <div class="logo">🛠️ Spare Parts</div>
     <form class="search-group" method="POST" action="/home">
       <input type="text" name="keyword" placeholder="Search part...">
-      <select name="company">
-        <option value="">Company</option>
-        <option>Toyota</option>
-        <option>Ford</option>
-        <option>BMW</option>
+      <select id="search-company" name="company" class="searchable">
+        <option value="">Select Company</option>
+        <option value="Toyota">Toyota</option>
+        <option value="Ford">Ford</option>
+        <option value="BMW">BMW</option>
+        <option value="Honda">Honda</option>
+        <option value="Hyundai">Hyundai</option>
+        <option value="Chevrolet">Chevrolet</option>
+        <option value="Mercedes">Mercedes</option>
+        <option value="Nissan">Nissan</option>
+        <option value="Kia">Kia</option>
+        <option value="Volkswagen">Volkswagen</option>
       </select>
+      
+      <select id="search-model" name="model" class="searchable">
+        <option value="">Select Model</option>
+      </select>
+      
       <select name="year_from">
         <option value="">From</option>
         <option>1980</option>
@@ -99,7 +113,36 @@
       if (current > 0) qty.innerText = current - 1;
       else alert("Out of stock.");
     }
-  </script>
+
+  const carModels = {
+    Toyota: ["Corolla", "Camry", "RAV4", "Land Cruiser"],
+    Ford: ["Focus", "Fiesta", "Explorer", "Mustang"],
+    BMW: ["320i", "X5", "M3", "i8"],
+    Honda: ["Civic", "Accord", "CR-V", "Fit"],
+    Hyundai: ["Elantra", "Tucson", "Sonata", "Santa Fe"],
+    Chevrolet: ["Malibu", "Impala", "Silverado", "Equinox"],
+    Mercedes: ["C-Class", "E-Class", "GLC", "GLE"],
+    Nissan: ["Altima", "Sentra", "X-Trail", "Pathfinder"],
+    Kia: ["Rio", "Sportage", "Seltos", "Sorento"],
+    Volkswagen: ["Golf", "Passat", "Tiguan", "Jetta"]
+  };
+
+  const companySelect = new Choices('#search-company', { searchEnabled: true });
+  const modelSelect = new Choices('#search-model', { searchEnabled: true });
+
+  document.getElementById("search-company").addEventListener("change", function () {
+    const selectedCompany = this.value;
+    const models = carModels[selectedCompany] || [];
+    
+    modelSelect.clearChoices();
+    modelSelect.setChoices(
+      models.map(model => ({ value: model, label: model })),
+      'value',
+      'label',
+      true
+    );
+  });
+</script>
 
 </body>
 </html>

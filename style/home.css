@@ -136,7 +136,7 @@ h2 {
   top: 10px;
   right: 10px;
   background: #007bff;
-  color: white;
+  color: rgb(255, 255, 255);
   border: none;
   padding: 5px 8px;
   font-size: 12px;
@@ -154,4 +154,164 @@ h2 {
     flex-wrap: wrap;
     justify-content: center;
   }
+}
+.choices__inner {
+  height: 38px !important;
+  padding: 4px 10px !important;
+  font-size: 14px !important;
+  border-radius: 5px !important;
+  border: 1px solid #ccc !important;
+  background-color: white !important;
+  color: black !important;
+  display: flex !important;
+  align-items: center !important;
+  box-sizing: border-box !important;
+  line-height: 1 !important;
+  margin: 0 !important;
+}
+.search-group input,
+.search-group select,
+.search-group button {
+  height: 38px;
+  padding: 4px 10px;
+  font-size: 14px;
+  line-height: 1;
+}
+/* Fix dropdown color inside Choices.js */
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+  background-color: white !important;
+  color: black !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  padding: 5px 10px !important;
+  text-align: left !important;
+}
+
+.choices__item {
+  color: black !important;
+  font-size: 14px !important;
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 6px 10px;
+}
+
+
+/* === FORCE ALL FIELDS TO ALIGN PERFECTLY ON BASELINE === */
+.search-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.search-group input,
+.search-group select,
+.search-group button,
+.choices {
+  height: 38px;
+  padding: 0 10px;
+  font-size: 14px;
+  line-height: 1;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+/* === MATCHED FIXED HEIGHT FOR DROPDOWN === */
+.choices__inner {
+  display: flex !important;
+  align-items: center !important;
+  height: 38px !important;
+  padding: 0 10px !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  background-color: white !important;
+  color: black !important;
+  border-radius: 5px !important;
+  border: 1px solid #ccc !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+
+.choices {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+/* === FIX DROPDOWN MENU TEXT === */
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+  background-color: white !important;
+  color: black !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  padding: 5px 10px !important;
+  text-align: left !important;
+  max-width: 180px !important;
+}
+
+.choices__item {
+  color: black !important;
+  font-size: 14px !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding: 6px 10px !important;
+}
+
+/* === Prevent broken dropdown text lines === */
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+  max-width: 200px !important;
+  min-width: 140px !important;
+  background-color: white !important;
+  color: black !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.choices__item {
+  display: block !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding: 6px 12px !important;
+  font-size: 14px !important;
+  color: black !important;
+  word-break: normal !important;
+  width: 100% !important;
+}
+
+/* === ENABLE SCROLLING FOR DROPDOWN MENU === */
+.choices__list--dropdown,
+.choices__list[role="listbox"] {
+  max-height: 180px !important;
+  overflow-y: auto !important;
+  scrollbar-width: thin; /* For Firefox */
+}
+
+.choices__list--dropdown::-webkit-scrollbar,
+.choices__list[role="listbox"]::-webkit-scrollbar {
+  width: 6px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-thumb,
+.choices__list[role="listbox"]::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+}
+
+.choices__list--dropdown::-webkit-scrollbar-track,
+.choices__list[role="listbox"]::-webkit-scrollbar-track {
+  background-color: #f1f1f1;
 }
