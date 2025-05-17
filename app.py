@@ -54,6 +54,7 @@ def login():
                 amount INTEGER,
                 shelf TEXT,
                 company TEXT,
+                model TEXT,
                 year_from INTEGER,
                 year_to INTEGER,
                 pay_price NUMERIC,
@@ -120,30 +121,6 @@ def home():
 
     return render_template('home.html', username=username, parts=parts)
 
-    if 'username' not in session:
-        return redirect('/')
-
-    username = session['username']
-    table_name = f"parts_{username}"
-
-    conn = get_connection()
-    cur = conn.cursor()
-
-    try:
-        cur.execute(f"""
-            SELECT id, name, part_number, shelf, amount, image
-            FROM {table_name}
-            ORDER BY created_at DESC
-        """)
-        parts = cur.fetchall()
-    except Exception as e:
-        flash(f"Failed to load parts: {e}")
-        parts = []
-
-    cur.close()
-    conn.close()
-
-    return render_template('home.html', username=username, parts=parts)
 
 @app.route('/use_part', methods=['POST'])
 def use_part():
@@ -189,6 +166,7 @@ def add_part():
     amount = int(data.get('amount') or 0)
     shelf = data.get('shelf', '')
     company = data.get('company', '')
+    model = data.get('model', '')
     year_from = int(data.get('year_from') or 0)
     year_to = int(data.get('year_to') or 0)
     pay_price = float(data.get('pay_price') or 0)
@@ -213,13 +191,14 @@ def add_part():
         """, (new_amount, existing[0]))
     else:
         cur.execute(f"""
-            INSERT INTO {table_name}
-            (name, part_number, description, amount, shelf, company, year_from, year_to, pay_price, sale_price, image, created_at)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-        """, (
-            name, part_number, description, amount, shelf, company,
-            year_from, year_to, pay_price, sale_price, filename, created_at
-        ))
+    INSERT INTO {table_name}
+    (name, part_number, description, amount, shelf, company, model, year_from, year_to, pay_price, sale_price, image, created_at)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+""", (
+    name, part_number, description, amount, shelf, company, model,
+    year_from, year_to, pay_price, sale_price, filename, created_at
+))
+
 
     conn.commit()
     cur.close()
@@ -268,7 +247,7 @@ def part_detail(part_id):
     if 'username' not in session:
         return redirect('/')
 
-    username = session['username']  # ✅ Get username
+    username = session['username']
     table_name = f"parts_{username}"
 
     conn = get_connection()
@@ -276,7 +255,7 @@ def part_detail(part_id):
 
     try:
         cur.execute(f"""
-            SELECT name, part_number, description, amount, shelf, company, 
+            SELECT name, part_number, description, amount, shelf, company, model,
                    year_from, year_to, pay_price, sale_price, image
             FROM {table_name}
             WHERE id = %s
@@ -288,19 +267,21 @@ def part_detail(part_id):
             return redirect('/home')
 
         part_data = {
-            'id': part_id,
-            'name': part[0],
-            'part_number': part[1],
-            'description': part[2],
-            'amount': part[3],
-            'shelf': part[4],
-            'company': part[5],
-            'year_from': part[6],
-            'year_to': part[7],
-            'pay_price': part[8],
-            'sale_price': part[9],
-            'image': part[10]
-        }
+    'id': part_id,
+    'name': part[0],
+    'part_number': part[1],
+    'description': part[2],
+    'amount': part[3],
+    'shelf': part[4],
+    'company': part[5],
+    'model': part[6],
+    'year_from': part[7],
+    'year_to': part[8],
+    'pay_price': part[9],
+    'sale_price': part[10],
+    'image': part[11]
+}
+
 
     except Exception as e:
         flash(f"Error loading part: {e}")
@@ -309,9 +290,7 @@ def part_detail(part_id):
         cur.close()
         conn.close()
 
-    # ✅ Pass username to the template
-    return render_template('part_detail.html', part=part_data, username=username)
-
+    return render_template('part_detail.html', part=part_data)
 
 @app.route('/logout')
 def logout():

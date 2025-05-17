@@ -140,3 +140,9 @@ button:hover {
     grid-template-columns: 25% 75%;
   }
 }
+
+input[list] {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}

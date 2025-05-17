@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Add / Refill Parts</title>
+  <!-- Choices.js CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/style/manage_part.css">
 </head>
@@ -51,26 +55,51 @@
           <input type="text" id="sale_price" name="sale_price">
         
           <label for="company">Car Company:</label>
-          <select id="company" name="company" required>
-            <option value="">Select</option>
-            <option>Toyota</option>
-            <option>Ford</option>
-            <option>BMW</option>
-            <option>Honda</option>
+          <select id="company" name="company" required onchange="updateModels()" class="searchable">
+            <option value="">Select Company</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Ford">Ford</option>
+            <option value="BMW">BMW</option>
+            <option value="Honda">Honda</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Chevrolet">Chevrolet</option>
+            <option value="Mercedes">Mercedes</option>
+            <option value="Nissan">Nissan</option>
+            <option value="Kia">Kia</option>
+            <option value="Volkswagen">Volkswagen</option>
           </select>
-        
+          
+          <label for="model">Car Model:</label>
+          <select id="model" name="model" required class="searchable">
+            <option value="">Select Model</option>
+          </select>
+            
           <label>Year Range:</label>
           <div class="year-range">
             <select name="year_from" required>
               <option value="">From</option>
+              <option>1980</option>
+              <option>1985</option>
+              <option>1990</option>
+              <option>1995</option>
               <option>2000</option>
+              <option>2005</option>
               <option>2010</option>
+              <option>2015</option>
               <option>2020</option>
+              <option>2025</option>
             </select>
             <select name="year_to" required>
               <option value="">To</option>
+              <option>1980</option>
+              <option>1985</option>
+              <option>1990</option>
+              <option>1995</option>
+              <option>2000</option>
               <option>2005</option>
+              <option>2010</option>
               <option>2015</option>
+              <option>2020</option>
               <option>2025</option>
             </select>
           </div>
@@ -84,6 +113,37 @@
       </div>
     </main>
   </div>
-
+  <script>
+    const companyDropdown = new Choices('#company', { searchEnabled: true });
+    const modelDropdown = new Choices('#model', { searchEnabled: true });
+  
+    const modelsByCompany = {
+      Toyota: ["Corolla", "Camry", "RAV4", "Land Cruiser"],
+      Ford: ["Focus", "Fiesta", "Explorer", "Mustang"],
+      BMW: ["320i", "X5", "M3", "i8"],
+      Honda: ["Civic", "Accord", "CR-V", "Fit"],
+      Hyundai: ["Elantra", "Tucson", "Sonata", "Santa Fe"],
+      Chevrolet: ["Malibu", "Impala", "Silverado", "Equinox"],
+      Mercedes: ["C-Class", "E-Class", "GLC", "GLE"],
+      Nissan: ["Altima", "Sentra", "X-Trail", "Pathfinder"],
+      Kia: ["Rio", "Sportage", "Seltos", "Sorento"],
+      Volkswagen: ["Golf", "Passat", "Tiguan", "Jetta"]
+    };
+  
+    function updateModels() {
+      const company = document.getElementById("company").value;
+      modelDropdown.clearChoices();
+      modelDropdown.setChoices(
+        (modelsByCompany[company] || []).map(model => ({
+          value: model,
+          label: model
+        })),
+        'value',
+        'label',
+        true
+      );
+    }
+  </script>
+  
 </body>
 </html>
