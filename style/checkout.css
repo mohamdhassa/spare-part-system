@@ -1,0 +1,275 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Topbar */
+  .topbar {
+    background: #004466;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    flex-wrap: wrap;
+  }
+  
+  .logo {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logout-button {
+    background: #ff4d4d;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  
+  /* Layout */
+  .layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 25% 75%;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+  }
+  
+  .sidebar {
+    background: #00334d;
+    color: white;
+    height: 100%;
+    padding-top: 20px;
+    overflow-y: auto;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar li {
+    padding: 15px 20px;
+  }
+  
+  .sidebar li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .content {
+    padding: 15px;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #004466;
+    margin-bottom: 20px;
+  }
+  
+  /* Cart Table */
+  .cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
+  
+  .cart-table th,
+  .cart-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+  }
+  
+  .cart-table img.thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+  
+  /* Form Inputs */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .total-section {
+    margin-top: 20px;
+    font-size: 16px;
+    text-align: right;
+  }
+  
+  .checkout-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .layout {
+      grid-template-columns: 100%;
+    }
+  
+    .sidebar {
+      display: none;
+    }
+  
+    .topbar {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 10px;
+    }
+  
+    .user-menu {
+      align-self: flex-end;
+      margin-bottom: 10px;
+    }
+  
+    .cart-table {
+      border: none;
+      font-size: 13px;
+    }
+  
+    .cart-table thead {
+      display: none;
+    }
+  
+    .cart-table tr {
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 15px;
+      padding: 10px;
+    }
+  
+    .cart-table td {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: none;
+      padding: 6px 4px;
+    }
+  
+    .cart-table td::before {
+      content: attr(data-label);
+      font-weight: bold;
+      color: #004466;
+      flex: 1;
+      text-align: left;
+    }
+  
+    .cart-table td img.thumb {
+      width: 45px;
+      height: 45px;
+      margin-right: 10px;
+    }
+  
+    .total-section {
+      text-align: center;
+      margin-top: 20px;
+    }
+  
+    .checkout-btn {
+      width: 100%;
+      font-size: 16px;
+      padding: 12px;
+    }
+  }
+  .cart-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    color: #004466;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 4px;
+  }
+/* Layout keeps sidebar like home */
+.layout {
+    display: grid;
+    grid-template-columns: 25% 75%;
+  }
+  
+  /* Make sidebar visible on mobile like home */
+  @media (max-width: 768px) {
+    .layout {
+      grid-template-columns: 25% 75%;
+    }
+  
+    .sidebar {
+      display: block;
+      background: #00334d;
+    }
+  
+    .cart-table td::before {
+      content: attr(data-label);
+      display: block;
+      font-weight: bold;
+      margin-bottom: 4px;
+      color: #004466;
+    }
+  
+    .cart-table td {
+      display: block;
+      text-align: right;
+      padding: 8px;
+    }
+  
+    .cart-table tr {
+      display: block;
+      background: white;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 0 4px rgba(0,0,0,0.1);
+    }
+  
+    .cart-table thead {
+      display: none;
+    }
+  }
+    

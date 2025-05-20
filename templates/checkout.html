@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style/checkout.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">🧾 Checkout</div>
+    <div class="user-menu">
+      <span class="username">{{ username }}</span>
+      <a href="/logout" class="logout-button">Logout</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <ul>
+        <li><a href="/home">📦 View Parts</a></li>
+        <li><a href="/manage">➕ Add / Refill</a></li>
+        <li><a href="/alerts">⚠️ Low Stock</a></li>
+        <li><a href="/sell">🛒 Sell</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+      <h2>Order Summary</h2>
+
+      {% if cart %}
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Part Number</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in cart.values() %}
+          <tr>
+            <td><img src="{{ item.image or '/static/uploads/sample.jpg' }}" class="thumb"></td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.part_number }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ "%.2f"|format(item.price) }}</td>
+            <td>${{ "%.2f"|format(item.subtotal) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <form method="POST" action="/checkout">
+        <div class="form-group">
+          <label for="buyer_name">Buyer Name:</label>
+          <input type="text" id="buyer_name" name="buyer_name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="buyer_phone">Buyer Phone:</label>
+          <input type="text" id="buyer_phone" name="buyer_phone" required>
+        </div>
+
+        <div class="form-group">
+          <label for="car_number">Car Number:</label>
+          <input type="text" id="car_number" name="car_number" required>
+        </div>
+
+        <div class="form-group">
+          <label for="discount">Discount (%) :</label>
+          <input type="number" id="discount" name="discount" min="0" max="100" value="0" oninput="updateDiscountedTotal()">
+        </div>
+
+        <div class="total-section">
+          <p><strong>Total before discount:</strong> ${{ "%.2f"|format(total) }}</p>
+          <p><strong>Total after discount:</strong> $<span id="total_after_discount">{{ "%.2f"|format(total) }}</span></p>
+        </div>
+
+        <button type="submit" class="checkout-btn">Confirm and Checkout</button>
+      </form>
+
+      {% else %}
+      <p>Your cart is empty.</p>
+      {% endif %}
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const total = parseFloat("{{ '%.2f'|format(total) }}");
+  
+      const discountInput = document.getElementById('discount');
+      const totalAfterDiscount = document.getElementById('total_after_discount');
+  
+      function update() {
+        const discount = parseFloat(discountInput.value) || 0;
+        const discounted = total - (total * discount / 100);
+        totalAfterDiscount.textContent = discounted.toFixed(2);
+      }
+  
+      discountInput.addEventListener('input', update);
+      update();
+    });
+  </script>
+  
+
+</body>
+</html>

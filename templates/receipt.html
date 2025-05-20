@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receipt</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      background: #004466;
+      color: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 15px;
+    }
+
+    .logo {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .user-menu {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logout-button {
+      background: #ff4d4d;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .layout {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 25% 75%;
+      height: calc(100vh - 60px);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      background: #00334d;
+      color: white;
+      height: 100%;
+      padding-top: 20px;
+      overflow-y: auto;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar li {
+      padding: 15px 20px;
+    }
+
+    .sidebar li a {
+      color: white;
+      text-decoration: none;
+      display: block;
+    }
+
+    .content {
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    h2 {
+      text-align: center;
+      color: #004466;
+      margin-bottom: 20px;
+    }
+
+    .receipt-info p {
+      margin: 5px 0;
+      font-size: 15px;
+    }
+
+    .cart-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .cart-table th,
+    .cart-table td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+    }
+
+    .cart-table img.thumb {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+    }
+
+    .receipt-total {
+      text-align: right;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .checkout-btn, .print-btn {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      background: #28a745;
+      color: white;
+      border-radius: 5px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      width: fit-content;
+    }
+
+    @media (max-width: 768px) {
+      .layout {
+        grid-template-columns: 100%;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+      }
+
+      .user-menu {
+        align-self: flex-end;
+        margin-bottom: 10px;
+      }
+
+      .cart-table thead {
+        display: none;
+      }
+
+      .cart-table tr {
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 0 3px rgba(0,0,0,0.1);
+        margin-bottom: 15px;
+        padding: 10px;
+      }
+
+      .cart-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: none;
+        padding: 6px 4px;
+        font-size: 14px;
+      }
+
+      .cart-table td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        color: #004466;
+        flex: 1;
+        text-align: left;
+      }
+
+      .cart-table td img.thumb {
+        width: 45px;
+        height: 45px;
+        margin-right: 10px;
+      }
+
+      .checkout-btn, .print-btn {
+        width: 90%;
+        margin: 10px auto;
+        font-size: 16px;
+        padding: 10px;
+      }
+
+      .receipt-total {
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="logo">🧾 Receipt</div>
+    <div class="user-menu">
+      <span class="username">{{ username }}</span>
+      <a href="/logout" class="logout-button">Logout</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <ul>
+        <li><a href="/home">📦 View Parts</a></li>
+        <li><a href="/manage">➕ Add / Refill</a></li>
+        <li><a href="/alerts">⚠️ Low Stock</a></li>
+        <li><a href="/sell">🛒 Sell</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+      <h2>Receipt</h2>
+
+      <div class="receipt-info">
+        <p><strong>Receipt #:</strong> {{ order.receipt_number }}</p>
+        <p><strong>Date:</strong> {{ order.date.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p><strong>Salesperson:</strong> {{ order.users }}</p>
+        <p><strong>Buyer:</strong> {{ order.buyer_name }} | {{ order.buyer_phone }}</p>
+        <p><strong>Car Number:</strong> {{ order.car_number }}</p>
+      </div>
+
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Part Name</th>
+            <th>Qty</th>
+            <th>Unit Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td data-label="Part Name">{{ item.part_name }}</td>
+            <td data-label="Part Number">{{ item.part_number }}</td>
+            <td data-label="Qty">{{ item.quantity }}</td>
+            <td data-label="Unit Price">${{ "%.2f"|format(item.unit_price) }}</td>
+            <td data-label="Subtotal">${{ "%.2f"|format(item.subtotal) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="receipt-total">
+        <p><strong>Total:</strong> ${{ "%.2f"|format(order.total + order.discount_amount) }}</p>
+        <p><strong>Discount:</strong> ${{ "%.2f"|format(order.discount_amount) }}</p>
+        <p><strong>Grand Total:</strong> ${{ "%.2f"|format(order.total) }}</p>
+      </div>
+
+      <a href="#" onclick="window.print()" class="print-btn">🖨️ Print Receipt</a>
+    </main>
+  </div>
+
+</body>
+</html>
