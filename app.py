@@ -6,15 +6,25 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import uuid
-
+from flask_session import Session
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = 'your-very-secret-key'
 
+# ✅ Fixed Flask-Session settings for Render
+SESSION_DIR = os.path.join(os.getcwd(), '.flask_session')
+os.makedirs(SESSION_DIR, exist_ok=True)
 
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = False  # Avoids byte-related cookie issue
+app.config['SESSION_FILE_DIR'] = SESSION_DIR
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
+Session(app)
 
 def get_connection():
     return psycopg2.connect(
