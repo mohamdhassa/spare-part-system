@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import uuid
-from flask_session import Session
 
 
 load_dotenv()
@@ -14,12 +13,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'your-very-secret-key'
 
-app.config['SESSION_TYPE'] = 'filesystem'
-app.config['SESSION_PERMANENT'] = False
-app.config['SESSION_USE_SIGNER'] = True
-app.config['SESSION_FILE_DIR'] = './.flask_session'
 
-Session(app)
 
 
 def get_connection():
