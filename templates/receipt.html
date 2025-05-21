@@ -1,10 +1,38 @@
+<!-- receipt.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Receipt</title>
+  <title>{{ 'Quote Preview' if is_quote else 'Receipt' }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    /* Same styles as before... */
+    
+  @media (max-width: 768px) {
+    .layout {
+      grid-template-columns: 25% 75% !important;
+    }
+
+    .sidebar {
+      display: block !important;
+      background: #00334d;
+    }
+
+    .sidebar ul {
+      padding-left: 10px;
+    }
+
+    .sidebar li {
+      border-bottom: 1px solid #004466;
+    }
+
+    .sidebar li a {
+      font-size: 14px;
+      padding: 10px 0;
+      display: block;
+    }
+  }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -13,7 +41,7 @@
       display: flex;
       flex-direction: column;
     }
-
+    
     .topbar {
       background: #004466;
       color: white;
@@ -22,26 +50,12 @@
       align-items: center;
       padding: 10px 15px;
     }
-
-    .logo {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .user-menu {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
+    .logo { font-size: 18px; font-weight: bold; }
+    .user-menu { display: flex; align-items: center; gap: 10px; }
     .logout-button {
-      background: #ff4d4d;
-      color: white;
-      padding: 6px 12px;
-      border-radius: 5px;
-      text-decoration: none;
+      background: #ff4d4d; color: white; padding: 6px 12px;
+      border-radius: 5px; text-decoration: none;
     }
-
     .layout {
       flex: 1;
       display: grid;
@@ -49,123 +63,60 @@
       height: calc(100vh - 60px);
       overflow: hidden;
     }
-
     .sidebar {
-      background: #00334d;
-      color: white;
-      height: 100%;
-      padding-top: 20px;
-      overflow-y: auto;
+      background: #00334d; color: white; height: 100%;
+      padding-top: 20px; overflow-y: auto;
     }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-
-    .sidebar li {
-      padding: 15px 20px;
-    }
-
+    .sidebar ul { list-style: none; padding: 0; margin: 0; }
+    .sidebar li { padding: 15px 20px; }
     .sidebar li a {
-      color: white;
-      text-decoration: none;
-      display: block;
+      color: white; text-decoration: none; display: block;
     }
-
-    .content {
-      padding: 15px;
-      overflow-y: auto;
-    }
-
+    .content { padding: 15px; overflow-y: auto; }
     h2 {
-      text-align: center;
-      color: #004466;
+      text-align: center; color: #004466;
       margin-bottom: 20px;
     }
-
-    .receipt-info p {
-      margin: 5px 0;
-      font-size: 15px;
-    }
-
+    .receipt-info p { margin: 5px 0; font-size: 15px; }
     .cart-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-      background: white;
-      border-radius: 8px;
-      overflow: hidden;
+      width: 100%; border-collapse: collapse; margin-top: 20px;
+      background: white; border-radius: 8px; overflow: hidden;
     }
-
-    .cart-table th,
-    .cart-table td {
-      padding: 10px;
-      border-bottom: 1px solid #ddd;
-      text-align: center;
+    .cart-table th, .cart-table td {
+      padding: 10px; border-bottom: 1px solid #ddd; text-align: center;
     }
-
     .cart-table img.thumb {
-      width: 50px;
-      height: 50px;
-      object-fit: cover;
-      border-radius: 4px;
+      width: 50px; height: 50px;
+      object-fit: cover; border-radius: 4px;
     }
-
     .receipt-total {
-      text-align: right;
-      margin-top: 20px;
-      font-size: 16px;
+      text-align: right; margin-top: 20px; font-size: 16px;
     }
-
     .checkout-btn, .print-btn {
-      display: block;
-      margin: 20px auto;
-      padding: 10px 20px;
-      background: #28a745;
-      color: white;
-      border-radius: 5px;
-      text-align: center;
-      text-decoration: none;
-      font-weight: bold;
+      display: block; margin: 20px auto; padding: 10px 20px;
+      background: #28a745; color: white; border-radius: 5px;
+      text-align: center; text-decoration: none; font-weight: bold;
       width: fit-content;
     }
 
     @media (max-width: 768px) {
-      .layout {
-        grid-template-columns: 100%;
-      }
-
-      .sidebar {
-        display: none;
-      }
-
+      .layout { grid-template-columns: 100%; }
+      .sidebar { display: none; }
       .topbar {
         flex-direction: column;
         align-items: stretch;
         padding: 10px;
       }
-
-      .user-menu {
-        align-self: flex-end;
-        margin-bottom: 10px;
-      }
-
-      .cart-table thead {
-        display: none;
-      }
-
+      .user-menu { align-self: flex-end; margin-bottom: 10px; }
+      .cart-table thead { display: none; }
       .cart-table tr {
-        display: flex;
-        flex-direction: column;
+        display: block;
         background: white;
         border-radius: 8px;
         box-shadow: 0 0 3px rgba(0,0,0,0.1);
         margin-bottom: 15px;
         padding: 10px;
       }
-
       .cart-table td {
         display: flex;
         justify-content: space-between;
@@ -174,7 +125,6 @@
         padding: 6px 4px;
         font-size: 14px;
       }
-
       .cart-table td::before {
         content: attr(data-label);
         font-weight: bold;
@@ -182,32 +132,15 @@
         flex: 1;
         text-align: left;
       }
-
-      .cart-table td img.thumb {
-        width: 45px;
-        height: 45px;
-        margin-right: 10px;
-      }
-
-      .checkout-btn, .print-btn {
-        width: 90%;
-        margin: 10px auto;
-        font-size: 16px;
-        padding: 10px;
-      }
-
-      .receipt-total {
-        text-align: center;
-      }
+      .receipt-total { text-align: center; }
     }
   </style>
 </head>
 <body>
-
   <header class="topbar">
-    <div class="logo">🧾 Receipt</div>
+    <div class="logo">{{ '🧾 Quote Preview' if is_quote else '🧾 Receipt' }}</div>
     <div class="user-menu">
-      <span class="username">{{ username }}</span>
+      <span class="username">{{ session['username'] }}</span>
       <a href="/logout" class="logout-button">Logout</a>
     </div>
   </header>
@@ -223,47 +156,82 @@
     </nav>
 
     <main class="content">
-      <h2>Receipt</h2>
+      <h2>{{ 'Quote Preview' if is_quote else 'Receipt' }}</h2>
 
       <div class="receipt-info">
-        <p><strong>Receipt #:</strong> {{ order.receipt_number }}</p>
-        <p><strong>Date:</strong> {{ order.date.strftime('%Y-%m-%d %H:%M') }}</p>
-        <p><strong>Salesperson:</strong> {{ order.users }}</p>
-        <p><strong>Buyer:</strong> {{ order.buyer_name }} | {{ order.buyer_phone }}</p>
-        <p><strong>Car Number:</strong> {{ order.car_number }}</p>
+        {% if is_quote %}
+          <p><strong>Date:</strong> {{ now.strftime('%Y-%m-%d %H:%M') }}</p>
+          <p><strong>Salesperson:</strong> {{ session['username'] }}</p>
+          {% if buyer_name %}<p><strong>Buyer:</strong> {{ buyer_name }}</p>{% endif %}
+          {% if buyer_phone %}<p><strong>Phone:</strong> {{ buyer_phone }}</p>{% endif %}
+          {% if car_number %}<p><strong>Car Number:</strong> {{ car_number }}</p>{% endif %}
+        {% else %}
+          <p><strong>Receipt #:</strong> {{ order.receipt_number }}</p>
+          <p><strong>Date:</strong> {{ order.date.strftime('%Y-%m-%d %H:%M') }}</p>
+          <p><strong>Salesperson:</strong> {{ order.users }}</p>
+          <p><strong>Buyer:</strong> {{ order.buyer_name }} | {{ order.buyer_phone }}</p>
+          <p><strong>Car Number:</strong> {{ order.car_number }}</p>
+        {% endif %}
       </div>
 
       <table class="cart-table">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Part Name</th>
+            <th>Part Number</th>
             <th>Qty</th>
             <th>Unit Price</th>
             <th>Subtotal</th>
           </tr>
         </thead>
         <tbody>
-          {% for item in items %}
-          <tr>
-            <td data-label="Part Name">{{ item.part_name }}</td>
-            <td data-label="Part Number">{{ item.part_number }}</td>
-            <td data-label="Qty">{{ item.quantity }}</td>
-            <td data-label="Unit Price">${{ "%.2f"|format(item.unit_price) }}</td>
-            <td data-label="Subtotal">${{ "%.2f"|format(item.subtotal) }}</td>
-          </tr>
-          {% endfor %}
+          {% if is_quote %}
+            {% set total = namespace(value=0) %}
+            {% for item in cart.values() %}
+              {% set subtotal = item.price * item.quantity %}
+              {% set total.value = total.value + subtotal %}
+              <tr>
+                <td data-label="Image"><img src="{{ item.image or '/static/uploads/sample.jpg' }}" class="thumb"></td>
+                <td data-label="Part Name">{{ item.name }}</td>
+                <td data-label="Part Number">{{ item.part_number }}</td>
+                <td data-label="Qty">{{ item.quantity }}</td>
+                <td data-label="Unit Price">${{ '%.2f'|format(item.price) }}</td>
+                <td data-label="Subtotal">${{ '%.2f'|format(subtotal) }}</td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            {% for item in items %}
+              <tr>
+                <td data-label="Image"><img src="{{ item.image or '/static/uploads/sample.jpg' }}" class="thumb"></td>
+                <td data-label="Part Name">{{ item.part_name }}</td>
+                <td data-label="Part Number">{{ item.part_number }}</td>
+                <td data-label="Qty">{{ item.quantity }}</td>
+                <td data-label="Unit Price">${{ '%.2f'|format(item.unit_price) }}</td>
+                <td data-label="Subtotal">${{ '%.2f'|format(item.subtotal) }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
         </tbody>
       </table>
 
       <div class="receipt-total">
-        <p><strong>Total:</strong> ${{ "%.2f"|format(order.total + order.discount_amount) }}</p>
-        <p><strong>Discount:</strong> ${{ "%.2f"|format(order.discount_amount) }}</p>
-        <p><strong>Grand Total:</strong> ${{ "%.2f"|format(order.total) }}</p>
+        {% if is_quote %}
+          {% set discount = 0 %}
+          {% set grand_total = total.value %}
+          <p><strong>Total:</strong> ${{ '%.2f'|format(total.value) }}</p>
+          <p><strong>Discount (10% preview):</strong> ${{ '%.2f'|format(discount) }}</p>
+          <p><strong>Grand Total:</strong> ${{ '%.2f'|format(grand_total) }}</p>
+          <p><em>This is a non-binding quote preview.</em></p>
+        {% else %}
+          <p><strong>Total:</strong> ${{ '%.2f'|format(order.total + order.discount_amount) }}</p>
+          <p><strong>Discount:</strong> ${{ '%.2f'|format(order.discount_amount) }}</p>
+          <p><strong>Grand Total:</strong> ${{ '%.2f'|format(order.total) }}</p>
+        {% endif %}
       </div>
 
-      <a href="#" onclick="window.print()" class="print-btn">🖨️ Print Receipt</a>
+      <a href="#" onclick="window.print()" class="print-btn">🖨️ Print {{ 'Quote' if is_quote else 'Receipt' }}</a>
     </main>
   </div>
-
 </body>
 </html>

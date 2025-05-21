@@ -44,15 +44,18 @@
         <tbody>
           {% for item in cart.values() %}
           <tr>
-            <td><img src="{{ item.image or '/static/uploads/sample.jpg' }}" class="thumb"></td>
-            <td>{{ item.name }}</td>
-            <td>{{ item.part_number }}</td>
-            <td>{{ item.quantity }}</td>
-            <td>${{ "%.2f"|format(item.price) }}</td>
-            <td>${{ "%.2f"|format(item.subtotal) }}</td>
+            <td data-label="Image">
+              <img src="{{ item.image or '/static/uploads/sample.jpg' }}" class="thumb">
+            </td>
+            <td data-label="Name">{{ item.name }}</td>
+            <td data-label="Part Number">{{ item.part_number }}</td>
+            <td data-label="Qty">{{ item.quantity }}</td>
+            <td data-label="Unit Price">${{ "%.2f"|format(item.price) }}</td>
+            <td data-label="Subtotal">${{ "%.2f"|format(item.subtotal) }}</td>
           </tr>
           {% endfor %}
         </tbody>
+        
       </table>
 
       <form method="POST" action="/checkout">
@@ -83,6 +86,10 @@
 
         <button type="submit" class="checkout-btn">Confirm and Checkout</button>
       </form>
+      <a href="/quote_preview" target="_blank" class="checkout-btn" style="background:#17a2b8;">
+        Print Quote 
+      </a>
+      
 
       {% else %}
       <p>Your cart is empty.</p>

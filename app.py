@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 from datetime import datetime
 import uuid
 from flask_session import Session
+from flask import request
+
 
 load_dotenv()
 
@@ -558,7 +560,6 @@ def checkout():
         cur = conn.cursor()
 
         try:
-            # Save order
             cur.execute("""
                 INSERT INTO orders (id, receipt_number, buyer_name, buyer_phone, car_number, users, total, discount, date)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -567,19 +568,16 @@ def checkout():
                 final_total, discount_amount, datetime.now()
             ))
 
-            # Save order items
             for item in cart.values():
                 cur.execute("""
-    INSERT INTO order_items (order_id, part_id, part_name, part_number, unit_price, quantity, subtotal)
-    VALUES (%s, %s, %s, %s, %s, %s, %s)
+    INSERT INTO order_items (order_id, part_id, part_name, part_number, unit_price, quantity, subtotal, image)
+    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
 """, (
     order_id, item['part_id'], item['name'], item['part_number'], item['price'],
-    item['quantity'], item['subtotal']
+    item['quantity'], item['subtotal'], item['image']
 ))
 
 
-
-                # Update stock
                 table_name = f"parts_{username}"
                 cur.execute(f"""
                     UPDATE {table_name}
@@ -606,7 +604,6 @@ def checkout():
                            total_after_discount=total_after_discount,
                            username=username)
 
-
 @app.route('/receipt/<order_id>')
 def receipt(order_id):
     if 'username' not in session:
@@ -617,7 +614,6 @@ def receipt(order_id):
     cur = conn.cursor()
 
     try:
-        # Fetch order info
         cur.execute("""
             SELECT receipt_number, buyer_name, buyer_phone, car_number, users, total, discount, date
             FROM orders
@@ -640,9 +636,8 @@ def receipt(order_id):
             'date': row[7]
         }
 
-        # Fetch items
         cur.execute("""
-            SELECT part_name, part_number, unit_price, quantity, subtotal
+            SELECT part_name, part_number, unit_price, quantity, subtotal, image
             FROM order_items
             WHERE order_id = %s
         """, (order_id,))
@@ -651,7 +646,8 @@ def receipt(order_id):
             'part_number': r[1],
             'unit_price': float(r[2]),
             'quantity': r[3],
-            'subtotal': float(r[4])
+            'subtotal': float(r[4]),
+            'image': r[5]
         } for r in cur.fetchall()]
 
         return render_template('receipt.html', order=order, items=items, username=username)
@@ -662,6 +658,69 @@ def receipt(order_id):
     finally:
         cur.close()
         conn.close()
+
+
+
+@app.route("/quote_preview")
+def quote_preview():
+    if "username" not in session:
+        return redirect("/login")
+
+    cart = session.get("cart", {})
+    if not cart:
+        flash("Your cart is empty.")
+        return redirect("/sell")
+
+    buyer_name = request.args.get("buyer_name", "")
+    buyer_phone = request.args.get("buyer_phone", "")
+    car_number = request.args.get("car_number", "")
+    username = session["username"]
+    table_name = f"parts_{username}"
+
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+
+        part_ids = list(cart.keys())
+        placeholders = ','.join(['%s'] * len(part_ids))
+        cur.execute(f"""
+            SELECT id, name, part_number, sale_price, image
+            FROM {table_name}
+            WHERE id IN ({placeholders})
+        """, part_ids)
+        parts = cur.fetchall()
+
+        items = []
+        for row in parts:
+            part_id, name, part_number, price, image_url = row
+            quantity = cart[str(part_id)]['quantity']
+            subtotal = price * quantity
+            items.append({
+                'image_url': image_url,
+                'part_name': name,
+                'part_number': part_number,
+                'price': price,
+                'quantity': quantity,
+                'subtotal': subtotal
+            })
+
+    except Exception as e:
+        flash(f"Error loading parts for preview: {e}")
+        return redirect("/sell")
+    finally:
+        cur.close()
+        conn.close()
+
+    return render_template(
+    "receipt.html",
+    is_quote=True,
+    now=datetime.now(),
+    buyer_name=buyer_name,
+    buyer_phone=buyer_phone,
+    car_number=car_number,
+    cart=session.get('cart', {})
+)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
