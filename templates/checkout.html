@@ -44,9 +44,7 @@
         <tbody>
           {% for item in cart.values() %}
           <tr>
-            <td data-label="Image">
-              <img src="{{ item.image or '/static/uploads/sample.jpg' }}" class="thumb">
-            </td>
+            <td data-label="Image"><img src="{{ item.image or '/static/uploads/sample.jpg' }}" class="thumb"></td>
             <td data-label="Name">{{ item.name }}</td>
             <td data-label="Part Number">{{ item.part_number }}</td>
             <td data-label="Qty">{{ item.quantity }}</td>
@@ -55,7 +53,6 @@
           </tr>
           {% endfor %}
         </tbody>
-        
       </table>
 
       <form method="POST" action="/checkout">
@@ -86,10 +83,15 @@
 
         <button type="submit" class="checkout-btn">Confirm and Checkout</button>
       </form>
-      <a href="/quote_preview" target="_blank" class="checkout-btn" style="background:#17a2b8;">
-        Print Quote 
-      </a>
-      
+
+      <!-- ✅ Form to POST to quote_preview and open in new tab -->
+      <form method="POST" action="/quote_preview" target="_blank">
+        <input type="hidden" name="buyer_name" id="quote_buyer_name">
+        <input type="hidden" name="buyer_phone" id="quote_buyer_phone">
+        <input type="hidden" name="car_number" id="quote_car_number">
+        <input type="hidden" name="discount" id="quote_discount">
+        <button type="submit" class="checkout-btn" style="background:#17a2b8;">Print Quote</button>
+      </form>
 
       {% else %}
       <p>Your cart is empty.</p>
@@ -100,21 +102,36 @@
   <script>
     document.addEventListener('DOMContentLoaded', function () {
       const total = parseFloat("{{ '%.2f'|format(total) }}");
-  
+
       const discountInput = document.getElementById('discount');
       const totalAfterDiscount = document.getElementById('total_after_discount');
-  
+
+      const quoteForm = document.querySelector('form[action="/quote_preview"]');
+      const buyerName = document.getElementById('buyer_name');
+      const buyerPhone = document.getElementById('buyer_phone');
+      const carNumber = document.getElementById('car_number');
+      const quoteBuyerName = document.getElementById('quote_buyer_name');
+      const quoteBuyerPhone = document.getElementById('quote_buyer_phone');
+      const quoteCarNumber = document.getElementById('quote_car_number');
+      const quoteDiscount = document.getElementById('quote_discount');
+
       function update() {
         const discount = parseFloat(discountInput.value) || 0;
         const discounted = total - (total * discount / 100);
         totalAfterDiscount.textContent = discounted.toFixed(2);
       }
-  
+
       discountInput.addEventListener('input', update);
       update();
+
+      quoteForm.addEventListener('submit', function () {
+        quoteBuyerName.value = buyerName.value;
+        quoteBuyerPhone.value = buyerPhone.value;
+        quoteCarNumber.value = carNumber.value;
+        quoteDiscount.value = discountInput.value;
+      });
     });
   </script>
-  
 
 </body>
 </html>

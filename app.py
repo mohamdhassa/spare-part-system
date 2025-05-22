@@ -662,7 +662,7 @@ def receipt(order_id):
 
 
 
-@app.route("/quote_preview")
+@app.route("/quote_preview", methods=["GET", "POST"])
 def quote_preview():
     if "username" not in session:
         return redirect("/login")
@@ -672,18 +672,23 @@ def quote_preview():
         flash("Your cart is empty.")
         return redirect("/sell")
 
-    buyer_name = request.args.get("buyer_name", "")
-    buyer_phone = request.args.get("buyer_phone", "")
-    car_number = request.args.get("car_number", "")
-    username = session["username"]
+    if request.method == "POST":
+        buyer_name = request.form.get("buyer_name", "")
+        buyer_phone = request.form.get("buyer_phone", "")
+        car_number = request.form.get("car_number", "")
+        try:
+            discount = float(request.form.get("discount", 0))
+        except ValueError:
+            discount = 0
+    else:
+        buyer_name = request.args.get("buyer_name", "")
+        buyer_phone = request.args.get("buyer_phone", "")
+        car_number = request.args.get("car_number", "")
+        discount = 0
 
-    # Calculate total
     total = sum(item["price"] * item["quantity"] for item in cart.values())
-
-    # ✅ Pull discount from session (default to 0)
-    discount_percent = float(session.get("discount", 0))
-    discount = round(total * discount_percent / 100, 2)
-    grand_total = round(total - discount, 2)
+    discount_amount = round(total * discount / 100, 2)
+    grand_total = round(total - discount_amount, 2)
 
     return render_template(
         "receipt.html",
@@ -694,7 +699,7 @@ def quote_preview():
         car_number=car_number,
         cart=cart,
         total=total,
-        discount=discount,
+        discount=discount_amount,
         grand_total=grand_total
     )
 
