@@ -550,6 +550,7 @@ def checkout():
         buyer_phone = request.form['buyer_phone']
         car_number = request.form['car_number']
         discount = float(request.form.get('discount', 0))
+        session["discount"] = discount  # ✅ Add this line
         discount_amount = round(total * discount / 100, 2)
         final_total = round(total - discount_amount, 2)
 
@@ -675,52 +676,27 @@ def quote_preview():
     buyer_phone = request.args.get("buyer_phone", "")
     car_number = request.args.get("car_number", "")
     username = session["username"]
-    table_name = f"parts_{username}"
 
-    try:
-        conn = get_connection()
-        cur = conn.cursor()
+    # Calculate total
+    total = sum(item["price"] * item["quantity"] for item in cart.values())
 
-        part_ids = list(cart.keys())
-        placeholders = ','.join(['%s'] * len(part_ids))
-        cur.execute(f"""
-            SELECT id, name, part_number, sale_price, image
-            FROM {table_name}
-            WHERE id IN ({placeholders})
-        """, part_ids)
-        parts = cur.fetchall()
-
-        items = []
-        for row in parts:
-            part_id, name, part_number, price, image_url = row
-            quantity = cart[str(part_id)]['quantity']
-            subtotal = price * quantity
-            items.append({
-                'image_url': image_url,
-                'part_name': name,
-                'part_number': part_number,
-                'price': price,
-                'quantity': quantity,
-                'subtotal': subtotal
-            })
-
-    except Exception as e:
-        flash(f"Error loading parts for preview: {e}")
-        return redirect("/sell")
-    finally:
-        cur.close()
-        conn.close()
+    # ✅ Pull discount from session (default to 0)
+    discount_percent = float(session.get("discount", 0))
+    discount = round(total * discount_percent / 100, 2)
+    grand_total = round(total - discount, 2)
 
     return render_template(
-    "receipt.html",
-    is_quote=True,
-    now=datetime.now(),
-    buyer_name=buyer_name,
-    buyer_phone=buyer_phone,
-    car_number=car_number,
-    cart=session.get('cart', {})
-)
-
+        "receipt.html",
+        is_quote=True,
+        now=datetime.now(),
+        buyer_name=buyer_name,
+        buyer_phone=buyer_phone,
+        car_number=car_number,
+        cart=cart,
+        total=total,
+        discount=discount,
+        grand_total=grand_total
+    )
 
 if __name__ == '__main__':
     app.run(debug=True)

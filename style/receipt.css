@@ -1,0 +1,129 @@
+    /* Same styles as before... */
+    
+    @media (max-width: 768px) {
+        .layout {
+          grid-template-columns: 25% 75% !important;
+        }
+    
+        .sidebar {
+          display: block !important;
+          background: #00334d;
+        }
+    
+        .sidebar ul {
+          padding-left: 10px;
+        }
+    
+        .sidebar li {
+          border-bottom: 1px solid #004466;
+        }
+    
+        .sidebar li a {
+          font-size: 14px;
+          padding: 10px 0;
+          display: block;
+        }
+      }
+    
+        body {
+          margin: 0;
+          font-family: Arial, sans-serif;
+          background-color: #f0f0f0;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+        }
+        
+        .topbar {
+          background: #004466;
+          color: white;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 10px 15px;
+        }
+        .logo { font-size: 18px; font-weight: bold; }
+        .user-menu { display: flex; align-items: center; gap: 10px; }
+        .logout-button {
+          background: #ff4d4d; color: white; padding: 6px 12px;
+          border-radius: 5px; text-decoration: none;
+        }
+        .layout {
+          flex: 1;
+          display: grid;
+          grid-template-columns: 25% 75%;
+          height: calc(100vh - 60px);
+          overflow: hidden;
+        }
+        .sidebar {
+          background: #00334d; color: white; height: 100%;
+          padding-top: 20px; overflow-y: auto;
+        }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar li { padding: 15px 20px; }
+        .sidebar li a {
+          color: white; text-decoration: none; display: block;
+        }
+        .content { padding: 15px; overflow-y: auto; }
+        h2 {
+          text-align: center; color: #004466;
+          margin-bottom: 20px;
+        }
+        .receipt-info p { margin: 5px 0; font-size: 15px; }
+        .cart-table {
+          width: 100%; border-collapse: collapse; margin-top: 20px;
+          background: white; border-radius: 8px; overflow: hidden;
+        }
+        .cart-table th, .cart-table td {
+          padding: 10px; border-bottom: 1px solid #ddd; text-align: center;
+        }
+        .cart-table img.thumb {
+          width: 50px; height: 50px;
+          object-fit: cover; border-radius: 4px;
+        }
+        .receipt-total {
+          text-align: right; margin-top: 20px; font-size: 16px;
+        }
+        .checkout-btn, .print-btn {
+          display: block; margin: 20px auto; padding: 10px 20px;
+          background: #28a745; color: white; border-radius: 5px;
+          text-align: center; text-decoration: none; font-weight: bold;
+          width: fit-content;
+        }
+    
+        @media (max-width: 768px) {
+          .layout { grid-template-columns: 100%; }
+          .sidebar { display: none; }
+          .topbar {
+            flex-direction: column;
+            align-items: stretch;
+            padding: 10px;
+          }
+          .user-menu { align-self: flex-end; margin-bottom: 10px; }
+          .cart-table thead { display: none; }
+          .cart-table tr {
+            display: block;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 3px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            padding: 10px;
+          }
+          .cart-table td {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: none;
+            padding: 6px 4px;
+            font-size: 14px;
+          }
+          .cart-table td::before {
+            content: attr(data-label);
+            font-weight: bold;
+            color: #004466;
+            flex: 1;
+            text-align: left;
+          }
+          .receipt-total { text-align: center; }
+        }
+        
