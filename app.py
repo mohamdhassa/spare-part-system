@@ -703,5 +703,60 @@ def quote_preview():
         grand_total=grand_total
     )
 
+
+@app.route('/sales_history', methods=['GET', 'POST'])
+def sales_history():
+    if 'username' not in session:
+        return redirect('/')
+
+    username = session['username']
+    car_number = request.form.get('car_number', '').strip()
+    buyer_phone = request.form.get('buyer_phone', '').strip()
+    date_from = request.form.get('date_from', '').strip()
+    date_to = request.form.get('date_to', '').strip()
+
+    query = """
+        SELECT id, receipt_number, buyer_name, buyer_phone, car_number, total, discount, date
+        FROM orders
+        WHERE users = %s
+    """
+    values = [username]
+
+    if car_number:
+        query += " AND car_number ILIKE %s"
+        values.append(f"%{car_number}%")
+    if buyer_phone:
+        query += " AND buyer_phone ILIKE %s"
+        values.append(f"%{buyer_phone}%")
+    if date_from:
+        query += " AND date >= %s"
+        values.append(date_from)
+    if date_to:
+        query += " AND date <= %s"
+        values.append(date_to)
+
+    query += " ORDER BY date DESC"
+
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(query, values)
+    receipts = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    parsed_receipts = []
+    for r in receipts:
+        parsed_receipts.append({
+            'id': r[0],
+            'receipt_number': r[1],
+            'buyer_name': r[2],
+            'buyer_phone': r[3],
+            'car_number': r[4],
+            'total': float(r[5]),
+            'discount': float(r[6]),
+            'date': r[7].strftime('%Y-%m-%d %H:%M')
+        })
+
+    return render_template('sales_history.html', receipts=parsed_receipts)
 if __name__ == '__main__':
     app.run(debug=True)

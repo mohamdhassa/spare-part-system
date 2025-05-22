@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales History</title>
+    <link rel="stylesheet" href="/style/checkout.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">📄 Sales History</div>
+    <div class="user-menu">
+      <span class="username">{{ session['username'] }}</span>
+      <a href="/logout" class="logout-button">Logout</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <ul>
+        <li><a href="/home">📦 View Parts</a></li>
+        <li><a href="/manage">➕ Add / Refill</a></li>
+        <li><a href="/alerts">⚠️ Low Stock</a></li>
+        <li><a href="/sell">🛒 Sell</a></li>
+        <li><a href="/sales_history">📄 Sales History</a></li>
+
+      </ul>
+    </nav>
+
+    <main class="content">
+      <h2>Search Receipts</h2>
+      <form method="POST">
+        <input type="text" name="car_number" placeholder="Car Number">
+        <input type="text" name="buyer_phone" placeholder="Phone Number">
+        <input type="date" name="date_from">
+        <input type="date" name="date_to">
+        <button type="submit" class="checkout-btn">Search</button>
+      </form>
+
+      <h3>Receipts</h3>
+      <table class="cart-table">
+        <thead>
+          <tr>
+            <th>Receipt</th><th>Buyer</th><th>Phone</th><th>Car</th><th>Total</th><th>Discount</th><th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in receipts %}
+          <tr>
+            <td><a href="/receipt/{{ r.id }}" target="_blank">{{ r.receipt_number }}</a></td>
+            <td>{{ r.buyer_name }}</td>
+            <td>{{ r.buyer_phone }}</td>
+            <td>{{ r.car_number }}</td>
+            <td>${{ '%.2f'|format(r.total) }}</td>
+            <td>${{ '%.2f'|format(r.discount) }}</td>
+            <td>{{ r.date }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </main>
+  </div>
+</body>
+</html>
