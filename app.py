@@ -8,6 +8,13 @@ from datetime import datetime
 import uuid
 from flask_session import Session
 from flask import request
+from flask import Flask, render_template, request, session, redirect
+from datetime import datetime
+from collections import defaultdict
+from psycopg2.extras import RealDictCursor
+import psycopg2
+import json
+
 
 
 load_dotenv()
@@ -36,6 +43,8 @@ def get_connection():
         user=os.getenv("DB_USER"),
         password=os.getenv("DB_PASSWORD")
     )
+
+
 
 @app.route('/')
 def login_page():
@@ -786,6 +795,125 @@ def sales_history():
     return render_template('sales_history.html', receipts=parsed_receipts)
 
 
-    return render_template('sales_history.html', receipts=parsed_receipts)
+
+
+@app.route('/analysis', methods=['GET', 'POST'])
+def analysis():
+    if 'username' not in session:
+        return redirect('/')
+
+    username = session['username']
+    date_from = request.form.get('date_from') or '2000-01-01'
+    date_to = request.form.get('date_to') or '2100-01-01'
+    company = request.form.get('company')
+    model = request.form.get('model')
+
+    filters = ["o.users = %s", "o.date BETWEEN %s AND %s"]
+    values = [username, date_from, date_to]
+
+    if company:
+        filters.append("p.company ILIKE %s")
+        values.append(f"%{company}%")
+    if model:
+        filters.append("p.model ILIKE %s")
+        values.append(f"%{model}%")
+
+    where_clause = " AND ".join(filters)
+
+    conn = get_connection()
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+
+    # Summary Metrics
+    cur.execute(f"""
+        SELECT
+            COALESCE(SUM(oi.subtotal), 0) AS revenue,
+            COALESCE(SUM(oi.pay_price * oi.quantity), 0) AS cost,
+            COALESCE(SUM(oi.profit), 0) AS profit,
+            COALESCE(SUM(oi.quantity), 0) AS quantity,
+            COUNT(DISTINCT o.id) AS orders
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN parts_{username} p ON p.id = CAST(oi.part_id AS INTEGER)
+        WHERE {where_clause}
+    """, values)
+    metrics = cur.fetchone()
+
+    # Sales Trend (by day)
+    cur.execute(f"""
+        SELECT TO_CHAR(o.date, 'YYYY-MM-DD') AS date, SUM(oi.subtotal) AS total
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN parts_{username} p ON p.id = CAST(oi.part_id AS INTEGER)
+        WHERE {where_clause}
+        GROUP BY 1 ORDER BY 1
+    """, values)
+    trend_data = cur.fetchall()
+    sales_trend = {
+        "labels": [r['date'] for r in trend_data],
+        "datasets": [{"label": "Sales", "data": [r['total'] for r in trend_data]}]
+    }
+
+    # Top Selling
+    cur.execute(f"""
+        SELECT oi.part_name, SUM(oi.quantity) AS qty
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN parts_{username} p ON p.id = CAST(oi.part_id AS INTEGER)
+        WHERE {where_clause}
+        GROUP BY oi.part_name ORDER BY qty DESC LIMIT 5
+    """, values)
+    selling_data = cur.fetchall()
+    top_selling = {
+        "labels": [r['part_name'] for r in selling_data],
+        "datasets": [{"label": "Qty Sold", "data": [r['qty'] for r in selling_data]}]
+    }
+
+    # Top Profit
+    cur.execute(f"""
+        SELECT oi.part_name, SUM(oi.profit) AS profit
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN parts_{username} p ON p.id = CAST(oi.part_id AS INTEGER)
+        WHERE {where_clause}
+        GROUP BY oi.part_name ORDER BY profit DESC LIMIT 5
+    """, values)
+    profit_data = cur.fetchall()
+    top_profit = {
+        "labels": [r['part_name'] for r in profit_data],
+        "datasets": [{"label": "Profit", "data": [r['profit'] for r in profit_data]}]
+    }
+
+    # Sales by Company
+    cur.execute(f"""
+        SELECT p.company, SUM(oi.subtotal) AS total
+        FROM order_items oi
+        JOIN orders o ON o.id = oi.order_id
+        JOIN parts_{username} p ON p.id = CAST(oi.part_id AS INTEGER)
+        WHERE {where_clause}
+        GROUP BY p.company ORDER BY total DESC LIMIT 5
+    """, values)
+    company_data = cur.fetchall()
+    sales_by_company = {
+        "labels": [r['company'] for r in company_data],
+        "datasets": [{"label": "Sales", "data": [r['total'] for r in company_data]}]
+    }
+
+    cur.close()
+    conn.close()
+
+    return render_template(
+        "analysis.html",
+        username=username,
+        revenue=round(metrics['revenue'], 2),
+        cost=round(metrics['cost'], 2),
+        profit=round(metrics['profit'], 2),
+        quantity=metrics['quantity'],
+        orders=metrics['orders'],
+        sales_trend=sales_trend,
+        top_selling=top_selling,
+        top_profit=top_profit,
+        sales_by_company=sales_by_company
+    )
+
 if __name__ == '__main__':
     app.run(debug=True)

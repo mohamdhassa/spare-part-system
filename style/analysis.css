@@ -1,0 +1,424 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+  }
+  
+  .topbar {
+    background-color: #004466;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logout-button {
+    background: #ff4d4d;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .layout {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    height: calc(100vh - 60px);
+  }
+  
+  .sidebar {
+    background-color: #00334d;
+    color: white;
+    padding: 20px;
+    height: 100%;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    padding: 12px 0;
+  }
+  
+  .sidebar a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .content {
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  form label {
+    font-weight: bold;
+  }
+  
+  form input, form button {
+    padding: 8px;
+    font-size: 14px;
+  }
+  
+  form button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  form button:hover {
+    background-color: #0056b3;
+  }
+  
+  canvas {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 900px;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .topbar {
+    background: #004466;
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    gap: 10px;
+  }
+  
+  .logo {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  
+  .search-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .search-group input,
+  .search-group select,
+  .search-group button {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+  }
+  
+  .user-menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .logout-button {
+    background: #ff4d4d;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 5px;
+    text-decoration: none;
+  }
+  
+  .layout {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 25% 75%;
+    height: calc(100vh - 60px);
+    overflow: hidden;
+  }
+  
+  .sidebar {
+    background: #00334d;
+    color: white;
+    height: 100%;
+    padding-top: 20px;
+    overflow-y: auto;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar li {
+    padding: 15px 20px;
+  }
+  
+  .sidebar li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .content {
+    padding: 15px;
+    height: 100%;
+    overflow-y: auto;
+  }
+  
+  h2 {
+    text-align: center;
+    color: #004466;
+    margin-bottom: 20px;
+  }
+  
+  .part-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+  }
+  
+  .part-box {
+    width: 160px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 0 5px #ccc;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+  }
+  
+  .part-box:hover {
+    transform: scale(1.02);
+  }
+  
+  .part-box img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+  }
+  
+  .info {
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .use-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #007bff;
+    color: rgb(255, 255, 255);
+    border: none;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* No stacking or sidebar collapsing even on mobile */
+  @media (max-width: 768px) {
+    .layout {
+      grid-template-columns: 25% 75%;
+    }
+  
+    .search-group {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+  .choices__inner {
+    height: 38px !important;
+    padding: 4px 10px !important;
+    font-size: 14px !important;
+    border-radius: 5px !important;
+    border: 1px solid #ccc !important;
+    background-color: white !important;
+    color: black !important;
+    display: flex !important;
+    align-items: center !important;
+    box-sizing: border-box !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+  }
+  .search-group input,
+  .search-group select,
+  .search-group button {
+    height: 38px;
+    padding: 4px 10px;
+    font-size: 14px;
+    line-height: 1;
+  }
+  /* Fix dropdown color inside Choices.js */
+  .choices__list--dropdown,
+  .choices__list[role="listbox"] {
+    background-color: white !important;
+    color: black !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    white-space: nowrap !important;
+    padding: 5px 10px !important;
+    text-align: left !important;
+  }
+  
+  .choices__item {
+    color: black !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 6px 10px;
+  }
+  
+  
+  /* === FORCE ALL FIELDS TO ALIGN PERFECTLY ON BASELINE === */
+  .search-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .search-group input,
+  .search-group select,
+  .search-group button,
+  .choices {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 14px;
+    line-height: 1;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    vertical-align: middle;
+    display: inline-block;
+  }
+  
+  /* === MATCHED FIXED HEIGHT FOR DROPDOWN === */
+  .choices__inner {
+    display: flex !important;
+    align-items: center !important;
+    height: 38px !important;
+    padding: 0 10px !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    background-color: white !important;
+    color: black !important;
+    border-radius: 5px !important;
+    border: 1px solid #ccc !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+  }
+  
+  .choices {
+    margin: 0 !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+  }
+  
+  /* === FIX DROPDOWN MENU TEXT === */
+  .choices__list--dropdown,
+  .choices__list[role="listbox"] {
+    background-color: white !important;
+    color: black !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    white-space: nowrap !important;
+    padding: 5px 10px !important;
+    text-align: left !important;
+    max-width: 180px !important;
+  }
+  
+  .choices__item {
+    color: black !important;
+    font-size: 14px !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    padding: 6px 10px !important;
+  }
+  
+  /* === Prevent broken dropdown text lines === */
+  .choices__list--dropdown,
+  .choices__list[role="listbox"] {
+    max-width: 200px !important;
+    min-width: 140px !important;
+    background-color: white !important;
+    color: black !important;
+    font-size: 14px !important;
+    line-height: 1.4 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+  
+  .choices__item {
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    padding: 6px 12px !important;
+    font-size: 14px !important;
+    color: black !important;
+    word-break: normal !important;
+    width: 100% !important;
+  }
+  
+  /* === ENABLE SCROLLING FOR DROPDOWN MENU === */
+  .choices__list--dropdown,
+  .choices__list[role="listbox"] {
+    max-height: 180px !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin; /* For Firefox */
+  }
+  
+  .choices__list--dropdown::-webkit-scrollbar,
+  .choices__list[role="listbox"]::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .choices__list--dropdown::-webkit-scrollbar-thumb,
+  .choices__list[role="listbox"]::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+  }
+  
+  .choices__list--dropdown::-webkit-scrollbar-track,
+  .choices__list[role="listbox"]::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+  }
+  

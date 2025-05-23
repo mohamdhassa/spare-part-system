@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>📊 Analysis Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style/analysis.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="logo">📊 Dashboard</div>
+    <div class="user-menu">
+      <span class="username">{{ username }}</span>
+      <a href="/logout" class="logout-button">Logout</a>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <ul>
+        <li><a href="/home">📦 View Parts</a></li>
+        <li><a href="/manage">➕ Add / Refill</a></li>
+        <li><a href="/alerts">⚠️ Low Stock</a></li>
+        <li><a href="/sell">🛒 Sell</a></li>
+        <li><a href="/sales_history">📄 Sales History</a></li>
+        <li><a href="/analysis">📊 Analysis</a></li>
+      </ul>
+    </nav>
+
+    <main class="content">
+      <h2>Sales & Inventory Analysis</h2>
+
+      <!-- Filters -->
+      <form method="POST">
+        <label>Date Range:</label>
+        <input type="date" name="date_from"> to
+        <input type="date" name="date_to">
+
+        <label>Company:</label>
+        <select id="filter-company" name="company" class="searchable">
+          <option value="">Select Company</option>
+          <option value="Toyota">Toyota</option>
+          <option value="Ford">Ford</option>
+          <option value="BMW">BMW</option>
+          <option value="Honda">Honda</option>
+          <option value="Hyundai">Hyundai</option>
+          <option value="Chevrolet">Chevrolet</option>
+          <option value="Mercedes">Mercedes</option>
+          <option value="Nissan">Nissan</option>
+          <option value="Kia">Kia</option>
+          <option value="Volkswagen">Volkswagen</option>
+          <option value="Mazda">Mazda</option>
+          <option value="Subaru">Subaru</option>
+          <option value="Jeep">Jeep</option>
+          <option value="Lexus">Lexus</option>
+          <option value="Audi">Audi</option>
+          <option value="Dodge">Dodge</option>
+          <option value="Ram">Ram</option>
+          <option value="GMC">GMC</option>
+          <option value="Tesla">Tesla</option>
+          <option value="Mitsubishi">Mitsubishi</option>
+        </select>
+
+        <label>Model:</label>
+        <select id="filter-model" name="model" class="searchable">
+          <option value="">Select Model</option>
+        </select>
+
+        <button type="submit">Filter</button>
+      </form>
+
+      <!-- Summary Cards -->
+      <div class="summary">
+        <div><strong>Total Revenue:</strong> ${{ revenue }}</div>
+        <div><strong>Total Cost:</strong> ${{ cost }}</div>
+        <div><strong>Total Profit:</strong> ${{ profit }}</div>
+        <div><strong>Quantity Sold:</strong> {{ quantity }}</div>
+        <div><strong>Orders:</strong> {{ orders }}</div>
+      </div>
+
+      <!-- Charts -->
+      <canvas id="salesTrendChart"></canvas>
+      <canvas id="topSellingChart"></canvas>
+      <canvas id="topProfitChart"></canvas>
+      <canvas id="salesByCompanyChart"></canvas>
+    </main>
+  </div>
+
+  <script>
+    const trendData = JSON.parse('{{ sales_trend | tojson | safe }}');
+    const sellingData = JSON.parse('{{ top_selling | tojson | safe }}');
+    const profitData = JSON.parse('{{ top_profit | tojson | safe }}');
+    const companyData = JSON.parse('{{ sales_by_company | tojson | safe }}');
+
+    new Chart(document.getElementById('salesTrendChart'), {
+      type: 'line',
+      data: trendData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Sales Over Time' }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('topSellingChart'), {
+      type: 'bar',
+      data: sellingData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Top Selling Parts' }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('topProfitChart'), {
+      type: 'bar',
+      data: profitData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Top Profitable Parts' }
+        }
+      }
+    });
+
+    new Chart(document.getElementById('salesByCompanyChart'), {
+      type: 'pie',
+      data: companyData,
+      options: {
+        responsive: true,
+        plugins: {
+          title: { display: true, text: 'Sales by Company' }
+        }
+      }
+    });
+
+    const carModels = {
+      Toyota: ["Corolla","Camry","RAV4","Land Cruiser","Yaris","Avalon","Highlander","4Runner","Tacoma","Tundra","Prius","Venza","C-HR","Sequoia","Supra","Sienna"],
+      Ford: ["Focus","Fiesta","Explorer","Mustang","F-150","Escape","Edge","Expedition","Fusion","Taurus","Bronco","Ranger","EcoSport","Transit","Maverick"],
+      BMW: ["320i","X5","M3","i8","X3","X1","X6","X7","5 Series","7 Series","2 Series","4 Series","Z4","i3","i4","iX","M4","M5"],
+      Honda: ["Civic","Accord","CR-V","Fit","Pilot","Odyssey","HR-V","Ridgeline","Insight","Passport","Prelude","Element","Crosstour"],
+      Hyundai: ["Elantra","Tucson","Sonata","Santa Fe","Accent","Venue","Palisade","Kona","Ioniq","Azera","Genesis","Veloster","Veracruz"],
+      Chevrolet: ["Malibu","Impala","Silverado","Equinox","Cruze","Tahoe","Traverse","Camaro","Colorado","Blazer","Suburban","Sonic","Spark","Trailblazer","Aveo","Volt","Bolt"],
+      Mercedes: ["C-Class","E-Class","GLC","GLE","S-Class","A-Class","B-Class","GLA","GLB","GLS","CLA","CLS","G-Class","SL","SLC","EQC","AMG GT"],
+      Nissan: ["Altima","Sentra","X-Trail","Pathfinder","Rogue","Versa","Maxima","Juke","Murano","Frontier","Titan","Leaf","Armada","370Z","GT-R"],
+      Kia: ["Rio","Sportage","Seltos","Sorento","Optima","Forte","Soul","Telluride","Stinger","Cadenza","K5","Carnival","Niro","EV6"],
+      Volkswagen: ["Golf","Passat","Tiguan","Jetta","Arteon","Polo","Touareg","Atlas","Taos","Beetle","ID.4","CC","T-Cross"],
+      Mazda: ["Mazda3","CX-5","Mazda6","MX-5","CX-30","CX-9","CX-50","Mazda2","RX-8","BT-50"],
+      Subaru: ["Impreza","Outback","Forester","Crosstrek","Legacy","Ascent","BRZ","WRX","Baja"],
+      Jeep: ["Wrangler","Cherokee","Grand Cherokee","Renegade","Compass","Patriot","Gladiator","Liberty","Commander"],
+      Lexus: ["IS","ES","RX","GX","NX","LS","UX","LX","RC","LC","CT","HS"],
+      Audi: ["A3","A4","A5","A6","A7","A8","Q3","Q5","Q7","Q8","RS3","RS5","RS7","TT","R8","e-tron","S4","S5","SQ5"],
+      Dodge: ["Charger","Challenger","Durango","Journey","Dart","Neon","Viper","Magnum","Nitro"],
+      Ram: ["1500","2500","3500","ProMaster","Chassis Cab","Ram Classic"],
+      GMC: ["Sierra","Terrain","Acadia","Yukon","Canyon","Envoy","Savana","Jimmy"],
+      Tesla: ["Model S","Model 3","Model X","Model Y","Roadster","Cybertruck","Semi"],
+      Mitsubishi: ["Lancer","Outlander","Pajero","Mirage","Eclipse","ASX","Xpander","Galant","Montero","Endeavor"]
+    };
+
+    const companySelect = new Choices('#filter-company', { searchEnabled: true });
+    const modelSelect = new Choices('#filter-model', { searchEnabled: true });
+
+    document.getElementById("filter-company").addEventListener("change", function () {
+      const selected = this.value;
+      const models = carModels[selected] || [];
+
+      modelSelect.clearChoices();
+      modelSelect.setChoices(
+        models.map(m => ({ value: m, label: m })),
+        'value',
+        'label',
+        true
+      );
+    });
+  </script>
+</body>
+</html>
