@@ -21,7 +21,6 @@
         <li><a href="/alerts">⚠️ Low Stock</a></li>
         <li><a href="/sell">🛒 Sell</a></li>
         <li><a href="/sales_history">📄 Sales History</a></li>
-
       </ul>
     </nav>
 
@@ -39,7 +38,14 @@
       <table class="cart-table">
         <thead>
           <tr>
-            <th>Receipt</th><th>Buyer</th><th>Phone</th><th>Car</th><th>Total</th><th>Discount</th><th>Date</th>
+            <th>Receipt</th>
+            <th>Buyer</th>
+            <th>Phone</th>
+            <th>Car</th>
+            <th>Qty</th>
+            <th>Profit</th>
+            <th>Discount</th>
+            <th>Date</th>
           </tr>
         </thead>
         <tbody>
@@ -49,7 +55,8 @@
             <td>{{ r.buyer_name }}</td>
             <td>{{ r.buyer_phone }}</td>
             <td>{{ r.car_number }}</td>
-            <td>${{ '%.2f'|format(r.total) }}</td>
+            <td>{{ r.qty }}</td>
+            <td>${{ '%.2f'|format(r.profit) }}</td>
             <td>${{ '%.2f'|format(r.discount) }}</td>
             <td>{{ r.date }}</td>
           </tr>

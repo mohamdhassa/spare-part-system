@@ -550,7 +550,7 @@ def checkout():
         buyer_phone = request.form['buyer_phone']
         car_number = request.form['car_number']
         discount = float(request.form.get('discount', 0))
-        session["discount"] = discount  # ✅ Add this line
+        session["discount"] = discount
         discount_amount = round(total * discount / 100, 2)
         final_total = round(total - discount_amount, 2)
 
@@ -561,6 +561,7 @@ def checkout():
         cur = conn.cursor()
 
         try:
+            # Insert order
             cur.execute("""
                 INSERT INTO orders (id, receipt_number, buyer_name, buyer_phone, car_number, users, total, discount, date)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -570,15 +571,24 @@ def checkout():
             ))
 
             for item in cart.values():
+                # Calculate profit per item
+                profit = round((item['price'] - item['pay_price']) * item['quantity'], 2)
+
+                # Insert each item into order_items with profit and pay_price_per_unit
                 cur.execute("""
-    INSERT INTO order_items (order_id, part_id, part_name, part_number, unit_price, quantity, subtotal, image)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-""", (
-    order_id, item['part_id'], item['name'], item['part_number'], item['price'],
-    item['quantity'], item['subtotal'], item['image']
-))
+                    INSERT INTO order_items (
+                        order_id, part_id, part_name, part_number,
+                        unit_price, quantity, subtotal, image,
+                        pay_price, profit
+                    )
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                """, (
+                    order_id, item['part_id'], item['name'], item['part_number'],
+                    item['price'], item['quantity'], item['subtotal'], item['image'],
+                    item['pay_price'], profit
+                ))
 
-
+                # Decrease stock
                 table_name = f"parts_{username}"
                 cur.execute(f"""
                     UPDATE {table_name}
@@ -588,7 +598,6 @@ def checkout():
 
             conn.commit()
             session.pop('cart', None)
-
             return redirect(f'/receipt/{order_id}')
 
         except Exception as e:
@@ -604,6 +613,14 @@ def checkout():
                            total=total,
                            total_after_discount=total_after_discount,
                            username=username)
+
+
+    return render_template('checkout.html',
+                           cart=cart,
+                           total=total,
+                           total_after_discount=total_after_discount,
+                           username=username)
+
 
 @app.route('/receipt/<order_id>')
 def receipt(order_id):
@@ -716,26 +733,33 @@ def sales_history():
     date_to = request.form.get('date_to', '').strip()
 
     query = """
-        SELECT id, receipt_number, buyer_name, buyer_phone, car_number, total, discount, date
-        FROM orders
-        WHERE users = %s
+        SELECT o.id, o.receipt_number, o.buyer_name, o.buyer_phone, o.car_number,
+               SUM(oi.quantity) AS total_qty,
+               SUM(oi.profit) AS total_profit,
+               o.discount, o.date
+        FROM orders o
+        JOIN order_items oi ON o.id = oi.order_id
+        WHERE o.users = %s
     """
     values = [username]
 
     if car_number:
-        query += " AND car_number ILIKE %s"
+        query += " AND o.car_number ILIKE %s"
         values.append(f"%{car_number}%")
     if buyer_phone:
-        query += " AND buyer_phone ILIKE %s"
+        query += " AND o.buyer_phone ILIKE %s"
         values.append(f"%{buyer_phone}%")
     if date_from:
-        query += " AND date >= %s"
+        query += " AND o.date >= %s"
         values.append(date_from)
     if date_to:
-        query += " AND date <= %s"
+        query += " AND o.date <= %s"
         values.append(date_to)
 
-    query += " ORDER BY date DESC"
+    query += """
+        GROUP BY o.id
+        ORDER BY o.date DESC
+    """
 
     conn = get_connection()
     cur = conn.cursor()
@@ -746,16 +770,21 @@ def sales_history():
 
     parsed_receipts = []
     for r in receipts:
-        parsed_receipts.append({
-            'id': r[0],
-            'receipt_number': r[1],
-            'buyer_name': r[2],
-            'buyer_phone': r[3],
-            'car_number': r[4],
-            'total': float(r[5]),
-            'discount': float(r[6]),
-            'date': r[7].strftime('%Y-%m-%d %H:%M')
-        })
+     parsed_receipts.append({
+        'id': r[0],
+        'receipt_number': r[1],
+        'buyer_name': r[2],
+        'buyer_phone': r[3],
+        'car_number': r[4],
+        'qty': int(r[5] or 0),
+        'profit': float(r[6] or 0),
+        'discount': float(r[7] or 0),
+        'date': r[8].strftime('%Y-%m-%d %H:%M')
+    })
+
+
+    return render_template('sales_history.html', receipts=parsed_receipts)
+
 
     return render_template('sales_history.html', receipts=parsed_receipts)
 if __name__ == '__main__':
