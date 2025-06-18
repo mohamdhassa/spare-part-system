@@ -259,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function () {
         const newSubtotal = unitPrice * quantity;
         row.querySelector('td[data-label="Subtotal"]').textContent = `$${newSubtotal.toFixed(2)}`;
 
-        // Update cart total
         const total = [...document.querySelectorAll('td[data-label="Subtotal"]')]
           .reduce((sum, td) => sum + parseFloat(td.textContent.replace('$', '')), 0);
         document.querySelector('.cart-total strong').textContent = `Total: $${total.toFixed(2)}`;
@@ -290,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.addEventListener('click', removeHandler);
   });
 
-  // ✅ Add to cart without reload
+  // ✅ Add to cart without reload (and create cart section if empty)
   document.querySelectorAll('.add-to-cart-btn').forEach(button => {
     button.addEventListener('click', async function () {
       const partId = this.dataset.partId;
@@ -306,16 +305,41 @@ document.addEventListener('DOMContentLoaded', function () {
       if (res.ok) {
         const data = await res.json();
 
-        const cartBody = document.querySelector('.cart-table tbody');
+        let cartBody = document.querySelector('.cart-table tbody');
+
+        if (!cartBody) {
+          const cartTitle = document.querySelector('h2:nth-of-type(2)');
+          const emptyMsg = cartTitle.nextElementSibling;
+          if (emptyMsg && emptyMsg.textContent.includes('Your cart is empty')) {
+            emptyMsg.remove();
+          }
+
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = `
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Image</th><th>Name</th><th>Part Number</th>
+                  <th>Quantity</th><th>Unit Price</th><th>Subtotal</th><th>Action</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+            <div class="cart-total">
+              <strong>Total: $0.00</strong>
+              <a href="/checkout" class="checkout-btn">Proceed to Checkout</a>
+            </div>
+          `;
+          cartTitle.parentNode.insertBefore(wrapper, cartTitle.nextSibling);
+          cartBody = wrapper.querySelector('tbody');
+        }
+
         let row = cartBody.querySelector(`tr[data-part-id="${data.part_id}"]`);
 
         if (row) {
-          // Update existing
-          const qtyInput = row.querySelector('.qty-input');
-          qtyInput.value = data.quantity;
+          row.querySelector('.qty-input').value = data.quantity;
           row.querySelector('td[data-label="Subtotal"]').textContent = `$${data.subtotal.toFixed(2)}`;
         } else {
-          // Add new row
           row = document.createElement('tr');
           row.setAttribute('data-part-id', data.part_id);
           row.innerHTML = `
@@ -333,33 +357,28 @@ document.addEventListener('DOMContentLoaded', function () {
           `;
           cartBody.appendChild(row);
 
-          // Attach listeners
-          row.querySelector('.qty-input').addEventListener('change', function () {
-            const input = this;
-            const partId = input.dataset.partId;
-            const quantity = input.value;
-
-            fetch("/update_cart", {
+          // Bind events to new row
+          row.querySelector('.qty-input').addEventListener('change', async function () {
+            const quantity = this.value;
+            const partId = this.dataset.partId;
+            const res = await fetch("/update_cart", {
               method: "POST",
               headers: { "Content-Type": "application/x-www-form-urlencoded" },
               body: new URLSearchParams({ part_id: partId, quantity })
-            }).then(r => {
-              if (r.ok) {
-                const row = input.closest('tr');
-                const unitPrice = parseFloat(row.querySelector('td[data-label="Unit Price"]').textContent.replace('$', ''));
-                row.querySelector('td[data-label="Subtotal"]').textContent = `$${(unitPrice * quantity).toFixed(2)}`;
-
-                const total = [...document.querySelectorAll('td[data-label="Subtotal"]')]
-                  .reduce((sum, td) => sum + parseFloat(td.textContent.replace('$', '')), 0);
-                document.querySelector('.cart-total strong').textContent = `Total: $${total.toFixed(2)}`;
-              }
             });
+            if (res.ok) {
+              const unitPrice = parseFloat(row.querySelector('td[data-label="Unit Price"]').textContent.replace('$', ''));
+              row.querySelector('td[data-label="Subtotal"]').textContent = `$${(unitPrice * quantity).toFixed(2)}`;
+
+              const total = [...document.querySelectorAll('td[data-label="Subtotal"]')]
+                .reduce((sum, td) => sum + parseFloat(td.textContent.replace('$', '')), 0);
+              document.querySelector('.cart-total strong').textContent = `Total: $${total.toFixed(2)}`;
+            }
           });
 
           row.querySelector('.remove-cart-btn').addEventListener('click', removeHandler);
         }
 
-        // Update cart total
         const total = [...document.querySelectorAll('td[data-label="Subtotal"]')]
           .reduce((sum, td) => sum + parseFloat(td.textContent.replace('$', '')), 0);
         document.querySelector('.cart-total strong').textContent = `Total: $${total.toFixed(2)}`;
@@ -367,9 +386,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
-
 </script>
+
 
 </body>
 </html>
