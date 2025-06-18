@@ -14,6 +14,7 @@ from collections import defaultdict
 from psycopg2.extras import RealDictCursor
 import psycopg2
 import json
+from flask import jsonify  # ✅ Ensure this is imported
 
 
 
@@ -467,6 +468,8 @@ def sell():
 
 
 # 🛒 Route: Add to Cart
+from flask import jsonify  # ✅ Ensure this is imported
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     if 'username' not in session:
@@ -489,8 +492,7 @@ def add_to_cart():
     conn.close()
 
     if not part:
-        flash("Part not found.")
-        return redirect('/sell')
+        return jsonify({'error': 'Part not found'}), 404
 
     init_cart()
     cart = session['cart']
@@ -506,12 +508,13 @@ def add_to_cart():
             'pay_price': float(part[3]),
             'image': part[4],
             'quantity': qty
-        }
+                            }
 
     cart[str(part_id)]['subtotal'] = round(cart[str(part_id)]['price'] * cart[str(part_id)]['quantity'], 2)
     session.modified = True
 
-    return redirect('/sell')
+    return jsonify(cart[str(part_id)])
+
 
 
 # 🛒 Route: Update Cart Quantity
